@@ -1,0 +1,5 @@
+object	expected_source_basename	accepted_component_path	historical_public_source	current_public_source	wrong_platform_same_name	stock_final_elf	SWRT_has_RT-AXE7800_dir	status
+api-broadcom.o	api-broadcom.c	release/src/router/shared/sysdeps/api-broadcom.c	YES (386/5.02axhnd era, 40 blobs in history; contains RTAXE7800 conditionals)	NO (absent from all current refs)	-	/usr/lib/libshared.so	NO	MODEL-PREBUILT-MISSING
+tcode.o	tcode.c	release/src/router/shared/tcode.c	NO (never published)	NO	-	/usr/lib/libshared.so	NO	MODEL-PREBUILT-MISSING
+amas_utils.o	amas_utils.c	release/src/router/shared/amas_utils.c	YES (4 blobs in history, 3704-4644 B; no matching symbols)	NO	-	/usr/lib/libshared.so	NO	MODEL-PREBUILT-MISSING
+private.o	private.c	(no trustworthy Broadcom path known)	NO Broadcom variant ever published	NO	shared/sysdeps/lantiq/private.c ; shared/sysdeps/qca/private.c (REJECTED by verifier)	/usr/lib/libshared.so	NO	MODEL-PREBUILT-MISSING

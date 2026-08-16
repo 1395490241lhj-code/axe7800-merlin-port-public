@@ -1,0 +1,19 @@
+# generated config + module evidence (clean replay v2)
+
+## userspace release/src/router/.config
+RTCONFIG_HND_ROUTER_AX_6756=y
+RTCONFIG_DHDAP=y
+RTCONFIG_BCMWL6=y
+RTCONFIG_BCMWL6A=y
+RTCONFIG_EXT_BCM53134=y
+RTCONFIG_EXTPHY_BCM84880=y
+
+## kernel config_rt-axe7800
+CONFIG_DHDAP absent (EXPECTED: emitted only when HND_ROUTER != y)
+
+## modules
+dhd.ko            1180156 B  ELF32 ARM  sha256=e2b71802da7b29459c7d102fb81b60958e19b1f487dc37043719b8839efecbf1
+wl.ko             8731152 B  ELF32 ARM  sha256=41f97eb30ecd7ea5a2ac78e5b328599039ef6c98c3ad04bc576f3623b281fa0a
+archer.ko          262544 B  ELF32 ARM  sha256=b5c81856dda873dd0fb1776d971e457ebc4a4355736457af3aaf4568da115e2b
+bcm_license.ko      28272 B  ELF32 ARM  sha256=43b05abce51b68c621961a0cdcde76526a38043a622d16a0a992739b9efc9f34
+bcmmcast.ko        124600 B  ELF32 ARM  sha256=fee04471cca15575104d9c9c4023836d6237616ecdb2ee1c128ad0f641565d45

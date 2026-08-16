@@ -1,0 +1,19 @@
+flag	class	ours_clean_replay_v2	SWRT_full_RT-AXE7800	RMerlin_pinned	GNUton_master	note
+EXT_PHY	HARDWARE-TOPOLOGY	"BCM84880"	"BCM84880"	not-defined	not-defined	MATCH
+SWITCH2	HARDWARE-TOPOLOGY	"BCM53134"	"BCM53134"	not-defined	not-defined	MATCH
+DHDAP	BUILD-MECHANISM	y	y	not-defined	not-defined	MATCH
+HND_WL	BUILD-MECHANISM	y	y	not-defined	not-defined	MATCH
+DHD_6715B0	WIRELESS-TOPOLOGY	<unset>	y	not-defined	not-defined	ABSENT-IN-OURS (minimal target)
+LACP	HARDWARE-TOPOLOGY	<unset>	y	not-defined	not-defined	ABSENT-IN-OURS (minimal target)
+BONDING	HARDWARE-TOPOLOGY	<unset>	y	not-defined	not-defined	ABSENT-IN-OURS (minimal target)
+BONDING_WAN	HARDWARE-TOPOLOGY	<unset>	y	not-defined	not-defined	ABSENT-IN-OURS (minimal target)
+HAS_5G_2	WIRELESS-TOPOLOGY	<unset>	y	not-defined	not-defined	ABSENT-IN-OURS (minimal target)
+WIFI6E	WIRELESS-TOPOLOGY	<unset>	y	not-defined	not-defined	ABSENT-IN-OURS (minimal target)
+FRONTHAUL_DWB	OPTIONAL-FEATURE	<unset>	n	not-defined	not-defined	ABSENT-IN-OURS (minimal target)
+UUPLUGIN	OPTIONAL-FEATURE	<unset>	n	not-defined	not-defined	ABSENT-IN-OURS (minimal target)
+TCPLUGIN	OPTIONAL-FEATURE	<unset>	<unset>	not-defined	not-defined	
+AMAS	OPTIONAL-FEATURE	<unset>	y	not-defined	not-defined	ABSENT-IN-OURS (minimal target)
+DWB	OPTIONAL-FEATURE	<unset>	y	not-defined	not-defined	ABSENT-IN-OURS (minimal target)
+BCMWL6	BUILD-MECHANISM	y	y	not-defined	not-defined	MATCH
+BCMWL6A	BUILD-MECHANISM	y	y	not-defined	not-defined	MATCH
+BCMBSD	BUILD-MECHANISM	RTCONFIG_BCMBSD=y (generated)	n/a	not-defined	not-defined	derived, not a target.mak token

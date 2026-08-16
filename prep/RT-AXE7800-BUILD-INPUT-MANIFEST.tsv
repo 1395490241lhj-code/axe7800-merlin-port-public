@@ -1,0 +1,75 @@
+component	expected_path	filename	file_type	required_by_rule	required_in_current_config	public_source_exists	historical_asus_source	donor_objects	stock_final_elf	classification
+shared	release/src/router/shared/prebuild/RT-AXE7800/	amas_dwb.o	ELF32-ARM-relocatable	shared/Makefile:460	yes	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	DONOR-ONLY
+shared	release/src/router/shared/prebuild/RT-AXE7800/	amas_utils.o	ELF32-ARM-relocatable	shared/Makefile:462	yes	no	yes (386/5.02 era, unpublished since)	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	MODEL-PREBUILT-MISSING
+shared	release/src/router/shared/prebuild/RT-AXE7800/	amas_wgn_shared.o	ELF32-ARM-relocatable	shared/Makefile:229	no	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	NOT-REQUIRED-CURRENT-CONFIG
+shared	release/src/router/shared/prebuild/RT-AXE7800/	api-broadcom.o	ELF32-ARM-relocatable	shared/Makefile:327	yes	no	yes (386/5.02 era, unpublished since)	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	MODEL-PREBUILT-MISSING
+shared	release/src/router/shared/prebuild/RT-AXE7800/	bcmutils.o	ELF32-ARM-relocatable	shared/Makefile:689-709 (prebuilt-preferred rule)	yes	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	DONOR-ONLY
+shared	release/src/router/shared/prebuild/RT-AXE7800/	bcmwifi_channels.o	ELF32-ARM-relocatable	shared/Makefile:689-709 (prebuilt-preferred rule)	yes	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	DONOR-ONLY
+shared	release/src/router/shared/prebuild/RT-AXE7800/	bcmxtlv.o	ELF32-ARM-relocatable	shared/Makefile:689-709 (prebuilt-preferred rule)	yes	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	DONOR-ONLY
+shared	release/src/router/shared/prebuild/RT-AXE7800/	ethctl_cmd.o	ELF32-ARM-relocatable	shared/Makefile:438	yes	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	DONOR-ONLY
+shared	release/src/router/shared/prebuild/RT-AXE7800/	ethswctl.o	ELF32-ARM-relocatable	shared/Makefile:437	yes	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	DONOR-ONLY
+shared	release/src/router/shared/prebuild/RT-AXE7800/	notify_ahs.o	ELF32-ARM-relocatable	shared/Makefile:225	no	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	NOT-REQUIRED-CURRENT-CONFIG
+shared	release/src/router/shared/prebuild/RT-AXE7800/	notify_rc.o	ELF32-ARM-relocatable	shared/Makefile:208	yes	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	DONOR-ONLY
+shared	release/src/router/shared/prebuild/RT-AXE7800/	nvpriv.o	ELF32-ARM-relocatable	shared/Makefile:627 (conditional copy)	no (optional copy)	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	DONOR-ONLY
+shared	release/src/router/shared/prebuild/RT-AXE7800/	private.o	ELF32-ARM-relocatable	shared/Makefile:612 (+observed build error)	yes	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	MODEL-PREBUILT-MISSING
+shared	release/src/router/shared/prebuild/RT-AXE7800/	shutils_private.o	ELF32-ARM-relocatable	shared/Makefile:414	yes	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	DONOR-ONLY
+shared	release/src/router/shared/prebuild/RT-AXE7800/	spwenc.o	ELF32-ARM-relocatable	shared/Makefile:420	no	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	NOT-REQUIRED-CURRENT-CONFIG
+shared	release/src/router/shared/prebuild/RT-AXE7800/	tcode.o	ELF32-ARM-relocatable	shared/Makefile:411	yes	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	MODEL-PREBUILT-MISSING
+shared	release/src/router/shared/prebuild/RT-AXE7800/	uu_utils.o	ELF32-ARM-relocatable	shared/Makefile:573	no	no	no	RT-AX58U_V2,TUF-AX3000_V2,GT-AX6000	/usr/lib/libshared.so	NOT-REQUIRED-CURRENT-CONFIG
+shared	release/src/router/shared/prebuild/RT-AXE7800/	amas_apg_shared.o	ELF32-ARM-relocatable	shared/Makefile:232	no	no	no	GT-AX6000 only (4912)	/usr/lib/libshared.so	NOT-REQUIRED-CURRENT-CONFIG
+rc	release/src/router/rc/prebuild/RT-AXE7800/	agg_brcm.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	amas-ssd-broadcom.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	amas-ssd-cd-broadcom.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	amas_apg.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	amas_bhctrl.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	amas_ipc.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	amas_lanctrl.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	amas_lib.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	amas_misc.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	amas_ssd.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	amas_ssd_cd.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	amas_status.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	amas_wlcconnect.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	antled.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	yes	no	GT-AX6000	/sbin/rc	SOURCE-BUILDABLE
+rc	release/src/router/rc/prebuild/RT-AXE7800/	ate-broadcom.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	ate.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	yes	no	GT-AX6000	/sbin/rc	SOURCE-BUILDABLE
+rc	release/src/router/rc/prebuild/RT-AXE7800/	broadcom.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	bwdpi.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	bwdpi_check.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	bwdpi_db_10.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	bwdpi_wred_alive.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	cfe.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	conn_diag-broadcom.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	conn_diag-sql.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	conn_diag.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	dhcpc_vc_query.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	dsl_fb.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	dslited.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	frs_service.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	gpy211_war.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	hostapd_config_6e.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	ig_s2s_client.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	ledg.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	mswan-broadcom.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	nt_mail.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	obd-broadcom.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	obd.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	obd_eth.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	obd_monitor.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	ocnvcd.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	private.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	psta_monitor.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	pwdec.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	roamast-broadcom.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	roamast.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	s46comm.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	sdn-interface-broadcom.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	tcode_brcm.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	tcode_rc.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	tpvpn.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	v6plusd.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+rc	release/src/router/rc/prebuild/RT-AXE7800/	wps_pbcd_6e.o	ELF32-ARM-relocatable	rc/Makefile	unverified-subset	no	no	GT-AX6000	/sbin/rc	DONOR-ONLY
+httpd	release/src/router/httpd/prebuild/RT-AXE7800/	pwenc.o	ELF32-ARM-relocatable	httpd/Makefile	unverified-subset	no	no	GT-AX6000	/usr/sbin/httpd	DONOR-ONLY
+httpd	release/src/router/httpd/prebuild/RT-AXE7800/	web-broadcom.o	ELF32-ARM-relocatable	httpd/Makefile	unverified-subset	no	no	GT-AX6000	/usr/sbin/httpd	DONOR-ONLY
+httpd	release/src/router/httpd/prebuild/RT-AXE7800/	web-broadcom_private.o	ELF32-ARM-relocatable	httpd/Makefile	unverified-subset	no	no	GT-AX6000	/usr/sbin/httpd	DONOR-ONLY
+httpd	release/src/router/httpd/prebuild/RT-AXE7800/	web_hook.o	ELF32-ARM-relocatable	httpd/Makefile	unverified-subset	no	no	GT-AX6000	/usr/sbin/httpd	DONOR-ONLY

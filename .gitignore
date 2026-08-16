@@ -1,0 +1,23 @@
+# This repository is documentation + small scripts only.
+# Never commit firmware, binaries, build output or source trees.
+*.pkgtb
+*.trx
+*.w
+*.zip
+*.tar
+*.tar.gz
+*.tar.xz
+*.tar.zst
+*.bin
+*.o
+*.ko
+*.so
+*.img
+*.elf
+work/
+src/
+toolchains/
+logs/
+stock/
+checkpoints/
+.DS_Store

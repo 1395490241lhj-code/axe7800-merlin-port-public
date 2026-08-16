@@ -1,0 +1,10 @@
+# Public sources consulted (read-only). No binary was imported into the port.
+RMerlin  https://github.com/RMerl/asuswrt-merlin.ng           branch 3006.102-wifi6
+         pinned  ccd139a31d94de15d2da744083dbafbcfe97dcdf
+         current 91b625c0e78ff84e9f4f6ef004c0d629729f769e  (pinned is a direct ancestor)
+GNUton   https://github.com/gnuton/asuswrt-merlin.ng          master 92e9b31110471cc38927b9aca135cc775d144c5a
+SWRT-dev https://github.com/SWRT-dev/asuswrt-bcm              master (RT-AXE7800 target stanza present)
+         release/src-rt/target.mak
+crawler-out https://github.com/GuilhermeMBertolino/crawler-out  asus/RT-AXE7800/  (extracted historical rootfs;
+         UNTRUSTED historical comparison only - metadata/paths compared, nothing downloaded into the port)
+ASUS CDN https://dlcdnets.asus.com/pub/ASUS/wireless/RT-AXE7800/FW_RT-AXE7800_300438825206.zip

@@ -1,0 +1,33 @@
+# hostTools lzop evidence - deterministic per-model HOST-tool staging
+# generated 2026-08-14T14:51:29-04:00 from pinned tree ccd139a31d94de15d2da744083dbafbcfe97dcdf
+
+## SOURCE (the link target)
+source path : hostTools/prebuilt/GT-AX6000/lzop
+size        : 87480
+sha256      : 8560c3685724fdcced6d2deff1e5ff67011a3582200c86051382559327ef7c0a
+file        : ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=7a4abb2e0450bafcdc947d9d719d0ca5491e389d, not stripped
+arch        : ELF64 Advanced
+BuildID     : 7a4abb2e0450bafcdc947d9d719d0ca5491e389d
+--version   : lzop 1.04
+
+## FUNCTIONAL COMPARISON ACROSS MODEL COPIES (actually executed)
+MODEL                    SIZE  SHA256-binary                              BUILD-ID
+GT-AX6000               87480  8560c3685724fdcced6d2deff1e5ff67011a3582   7a4abb2e0450bafcdc947d9d719d0ca5491e389d
+GT-AX11000_PRO          87480  c620aa91b6495e7a02de851c7d52e1a73243673b   24df2ffd13f0fdb36819cb961267632e01162120
+GT-AXE16000             87480  ca5fb76ac5383e0d7b8a720f383d7327b4f1cb69   00d633bb4a706a50ffceb94caaa8380d21564000
+RT-AX86U_PRO            87480  61d3313c2bf52633b29232d1af2ffb114e5243ce   57b755c25dd7ac397c5aad42b8df84341d2c8963
+RT-AX88U_PRO            87480  e2896fc497fb014b5959bc6896f22429c46264af   d131dcca7937c3828131dc32b4e37c6a9db84237
+XT12                    87480  11ed32f9bff448f679224f998851b670a9f00a95   c1c41c9904ea11d9679153a80a0776b69aaf5d09
+
+### identical-input compression test
+input: 3087480 bytes  sha256=c6fef033a363c3c8148f96886da5e32962c146ab2271820daf5e7bff6591aff1
+  GT-AX6000          output sha256=07cb61db956748e86233594da2790a8f0232c13b76083e37f8aa31f05f7fd4f3 size=3041911
+  GT-AX11000_PRO     output sha256=07cb61db956748e86233594da2790a8f0232c13b76083e37f8aa31f05f7fd4f3 size=3041911
+  GT-AXE16000        output sha256=07cb61db956748e86233594da2790a8f0232c13b76083e37f8aa31f05f7fd4f3 size=3041911
+  RT-AX86U_PRO       output sha256=07cb61db956748e86233594da2790a8f0232c13b76083e37f8aa31f05f7fd4f3 size=3041911
+  RT-AX88U_PRO       output sha256=07cb61db956748e86233594da2790a8f0232c13b76083e37f8aa31f05f7fd4f3 size=3041911
+  XT12               output sha256=07cb61db956748e86233594da2790a8f0232c13b76083e37f8aa31f05f7fd4f3 size=3041911
+
+### verdict
+distinct compressed-output hashes across model copies: 1
+=> all model lzop copies produce BYTE-IDENTICAL output for identical input

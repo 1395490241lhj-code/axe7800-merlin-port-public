@@ -1,0 +1,15 @@
+#nothing to do...
+ [shared] CC netlink.o
+ [shared] CC getifaddrs.o
+#nothing to do...
+#nothing to do...
+#nothing to do...
+make[5]: *** No rule to make target 'private.c', needed by 'private.o'.  Stop.
+make[5]: Leaving directory '<WORKTREE>/asuswrt-merlin-axe7800-replay-v2/release/src/router/shared'
+make[4]: *** [Makefile:4604: shared] Error 2
+make[4]: Leaving directory '<WORKTREE>/asuswrt-merlin-axe7800-replay-v2/release/src/router'
+make[3]: *** [Makefile:33: router_all] Error 2
+make[3]: Leaving directory '<WORKTREE>/asuswrt-merlin-axe7800-replay-v2/release/src-rt-5.04axhnd.675x/userspace'
+make[2]: *** [build/Makefile:358: userspace] Error 2
+make[2]: Leaving directory '<WORKTREE>/asuswrt-merlin-axe7800-replay-v2/release/src-rt-5.04axhnd.675x'
+make[1]: *** [Makefile:6821: bin] Error 2
