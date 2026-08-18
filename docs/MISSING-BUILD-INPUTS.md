@@ -35,7 +35,8 @@ dependency resolution.
 - The **RT-AXE7800 GPL 388.34458 package contains no `libwebapi` component at all**: no
   directory, no `webapi.c`, no `priv_webapi.c`, no `priv_webapi.o`. The package does ship
   `release/src/router` with many other components, so this is a specific absence rather than a
-  truncated archive.
+  truncated archive. The reason for that component's absence from this model-specific package
+  has not been established.
 - The shipped 388_25206 firmware **does** contain `/usr/lib/libwebapi.so`, so the component
   exists for this model.
 

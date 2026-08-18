@@ -31,7 +31,7 @@ reaches the **model-specific userspace supply boundary**.
 ### Crossed, in the clean port
 
 - RT-AXE7800 target dispatch
-- BCM6756 / 96756 ARM32 profile selection
+- BCM6756 / 96756GW ARM32 profile selection
 - kernel build, `arch/arm/boot/zImage is ready`
 - Broadcom driver phase (`dhd.ko`, `wl.ko`, `archer.ko`, `bcm_license.ko`, `bcmmcast.ko`)
 - **authentic RT-AXE7800 GPL provenance** established for the P0/P1 objects, from the official
@@ -63,9 +63,9 @@ The build demands it unconditionally and can only obtain it from that per-model 
 which does not exist.
 
 - **No authentic RT-AXE7800 copy or source has been found in the material examined.**
-- The available **RT-AXE7800 GPL 388.34458 package predates this `libwebapi` generation and
-  contains no `libwebapi` component at all** — no directory, no `webapi.c`, no
-  `priv_webapi.c`, no `priv_webapi.o`.
+- The available **RT-AXE7800 GPL 388.34458 package contains no `libwebapi` component** — no
+  directory, no `webapi.c`, no `priv_webapi.c`, no `priv_webapi.o`. The reason for that
+  component's absence from this model-specific package has not been established.
 - **Cross-model candidates were analyzed but are interface-divergent and have NOT been
   adopted.** No donor binary is published here.
 
@@ -148,8 +148,9 @@ firmware / CLM / regulatory compatibility relative to stock 388_25206.**
 
 **No donor object has been imported merely to make the build pass.** Candidate objects from
 other models were analyzed against the shipped runtime; where they diverged, they were rejected
-and the blocker was left in place. Making the build succeed by substituting another model's
-binaries would silently bake in wrong board, radio and regulatory behaviour.
+and the blocker was left in place. Cross-model substitution could introduce model-specific
+ABI, feature, or board-behavior mismatches and would invalidate the provenance assumptions of
+this port.
 
 ## Layout
 
