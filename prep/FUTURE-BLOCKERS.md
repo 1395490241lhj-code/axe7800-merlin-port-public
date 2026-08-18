@@ -1,5 +1,15 @@
 # RT-AXE7800 — future blocker map (static audit)
 
+> ## ⚠️ HISTORICAL — predictions partly borne out, partly wrong
+>
+> This audit was made at the clean-replay-v2 milestone. Recorded outcome:
+> `shared` (#1) is **solved**; `rc` (#3) and `httpd` (#4) were correctly predicted and are
+> now the live supply boundary. However `libwebapi` was listed here as *"not reachable unless
+> features are enabled later"* — that was **wrong**: it is reachable in the current
+> configuration and is the **current clean blocker**.
+>
+> Kept for the record. See [`../docs/STATUS-2026-08-18.md`](../docs/STATUS-2026-08-18.md).
+
 Audited: clean-replay-v2 tree at RMerlin pin `ccd139a31d94de15d2da744083dbafbcfe97dcdf`.
 Read-only. No donor file was copied or substituted.
 

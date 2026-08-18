@@ -1,5 +1,16 @@
 # Status
 
+> ## ⚠️ SUPERSEDED — this snapshot is outdated
+>
+> This file describes the **clean-replay-v2** milestone. The four
+> `shared/prebuild/RT-AXE7800/` objects listed below as "Unresolved" have since been
+> **resolved** with authentic ASUS GPL 388.34458 inputs, and the build now stops much later,
+> at `libwebapi/prebuild/RT-AXE7800/priv_webapi.o`.
+>
+> **See [`docs/STATUS-2026-08-18.md`](docs/STATUS-2026-08-18.md) for the current status.**
+> The "Established facts" and "Intentionally not attempted" sections below remain accurate and
+> are kept for the record.
+
 Frozen at the **clean-replay-v2** milestone. Reproducibility baseline: RMerlin
 `3006.102-wifi6` @ `ccd139a31d94de15d2da744083dbafbcfe97dcdf`.
 
