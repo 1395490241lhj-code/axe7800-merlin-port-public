@@ -99,9 +99,9 @@ chronology is inferred from them here.**
 > Merlin-side configuration would want; **they must not be applied to raw GPL 388.34458**,
 > which needs exactly what its own package ships — all 42 of its flat objects, no more.
 >
-> Likewise, differences derived from **set comparison** between the two trees' prebuilt
-> inventories are not, by themselves, demonstrated build blockers. Only `priv_webapi.o` has
-> actually been observed to stop a Merlin-side build.
+> Separately: a prebuilt object being **configuration-active** at the pinned baseline is not
+> the same as it being a demonstrated build blocker. Only `priv_webapi.o` has actually been
+> observed to stop a Merlin-side build; anything later in the build order is unobserved.
 
 ## Active research direction
 
