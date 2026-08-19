@@ -2,11 +2,10 @@
 
 > ## ⚠️ NOT FLASH-READY — DO NOT FLASH ANYTHING BUILT FROM THIS RESEARCH
 >
-> This is **experimental RT-AXE7800 / BCM6756 Asuswrt-Merlin porting research**.
+> This is **experimental RT-AXE7800 / BCM6756 porting research**.
 > - **No image produced by this work is flash-ready.** Do **not** flash generated images.
 > - **No ASUS firmware binaries are redistributed here.** No stock/extracted firmware, no
->   `.o` / `.ko` / `.so` / ELF objects, no dongle firmware, no donor binaries.
-> - The build **intentionally stops** at missing model-specific inputs (see below).
+>   `.o` / `.ko` / `.so` / ELF objects, no dongle firmware, no donor binaries, no images.
 > - **Runtime ABI compatibility and flash safety are NOT established.**
 > - This repository documents **research and reproducibility. It is not a firmware release.**
 > - No router flash, NVRAM, MTD, bootloader or partition operation is part of this workflow.
@@ -14,148 +13,108 @@
 ## What this is
 
 A reproducibility lab for porting Asuswrt-Merlin to the **ASUS RT-AXE7800**
-(Broadcom **BCM6756**, profile **96756GW**, 32-bit ARM). Every change is derived from pinned
-upstream commits and can be replayed from a clean checkout.
+(Broadcom **BCM6756**, profile **96756GW**, 32-bit ARM).
 
-Reproducibility baseline: **RMerlin `asuswrt-merlin.ng`, branch `3006.102-wifi6`, commit
-`ccd139a31d94de15d2da744083dbafbcfe97dcdf`**.
+Two separate tracks are now in play, and keeping them apart matters:
 
-> This pinned lineage is *our* reproducibility baseline. It is **not** claimed to be the exact
-> ASUS source tree used to produce the official 3.0.0.4.388_25206 firmware.
+| Track | What it is | Status |
+|---|---|---|
+| **Merlin port** | adding RT-AXE7800 to the newer Asuswrt-Merlin lineage | blocked at a newer-generation interface |
+| **Standalone GPL build** | building RT-AXE7800 from ASUS's own published GPL package | **works** |
 
-## Current state (2026-08-18)
+Merlin baseline: **`asuswrt-merlin.ng`, branch `3006.102-wifi6`, commit
+`ccd139a31d94de15d2da744083dbafbcfe97dcdf`**. That pinned lineage is *our* reproducibility
+baseline; it is **not** claimed to be the source tree ASUS used for any retail firmware.
 
-The clean port has advanced well past the state described in the first public release. It now
-reaches the **model-specific userspace supply boundary**.
+## Standalone GPL build — ESTABLISHED
 
-### Crossed, in the clean port
+The official **RT-AXE7800 GPL 3.0.0.4.388.34458** package builds RT-AXE7800 **by itself**.
 
-- RT-AXE7800 target dispatch
-- BCM6756 / 96756GW ARM32 profile selection
-- kernel build, `arch/arm/boot/zImage is ready`
-- Broadcom driver phase (`dhd.ko`, `wl.ko`, `archer.ko`, `bcm_license.ko`, `bcmmcast.ko`)
-- **authentic RT-AXE7800 GPL provenance** established for the P0/P1 objects, from the official
-  ASUS GPL 388.34458 package (verified by hash; the package itself is not redistributed here)
-- **P0** — the four `shared/prebuild/RT-AXE7800/` objects
-- **P1** — five further shared-link objects
-- `libshared.so` / `libshared.a` produced
-- **WLAN utility ordering** — a build-ordering defect corrected; the utility scripts install
-  identically to stock
-- **nvram** — a packaging defect corrected; the resulting binary matches stock by hash
-- **SYSSTATE_P2** — build/copy stage crossed
-- **LIBBCM_P3** — build/copy stage crossed
-- **bcm_util include-path defect** corrected and crossed
-- **official RT-AXE7800 `ODMPID` target flag restored**, after confirming it in the official
-  GPL target stanza
-- **`webapi.c` now compiles and `webapi.o` is produced**
+- Validated against a **complete** extraction of the package (an earlier, much smaller partial
+  extraction had produced misleading "absent" results and has been retired).
+- A **clean one-shot `make rt-axe7800` from a brand-new extraction succeeds**, end to end,
+  through kernel, drivers, userspace, rootfs and image packaging.
+- Reproduced twice from independent pristine extractions.
 
-> "Crossed" means the build stage completes. Where a produced binary is described as matching
-> stock, that is a **build/copy** comparison by hash. **It is not a claim of runtime ABI
-> compatibility, and it is not a claim of flash safety.** Neither has been established.
+What the raw generation does with its own contents:
 
-### Current clean blocker
-
-`release/src/router/libwebapi` requires a model-specific object:
-
-    release/src/router/libwebapi/prebuild/RT-AXE7800/priv_webapi.o
-
-The build demands it unconditionally and can only obtain it from that per-model directory,
-which does not exist.
-
-- **No authentic RT-AXE7800 copy or source has been found in the material examined.**
-- The available **RT-AXE7800 GPL 388.34458 package contains no `libwebapi` component** — no
-  directory, no `webapi.c`, no `priv_webapi.c`, no `priv_webapi.o`. The reason for that
-  component's absence from this model-specific package has not been established.
-- **Cross-model candidates were analyzed but are interface-divergent and have NOT been
-  adopted.** No donor binary is published here.
-
-## The supply boundary
-
-`priv_webapi.o` is **no longer believed to be an isolated missing input.**
-
-To find out what lies behind it, a **strictly isolated NON-CLEAN same-model stock-oracle
-dependency-mapping experiment** was run. It bypassed `libwebapi` only, purely to observe the
-next unmet dependency. It demonstrated that the next blocker is:
-
-    release/src/router/rc/prebuild/RT-AXE7800/
-
-> ### The stock-oracle experiment is NOT part of the clean port
->
-> That experiment was **same-model**, **isolated**, and **dependency-mapping only**. It is
-> **not clean-port input**, **not source-complete**, **not distributable**, **not runtime
-> compatible**, and **not flashable**. **No stock binary is proposed for the final port**, and
-> none is published here.
-
-### Evidence levels
-
-These are deliberately kept distinct and are not interchangeable.
-
-| Level | Finding |
+| Component | Result |
 |---|---|
-| **DEMONSTRATED** | the clean `priv_webapi.o` blocker |
-| **DEMONSTRATED** | the `rc` per-model prebuild blocker, in the isolated downstream mapping |
-| **STRUCTURALLY PRESENT** | the analogous `httpd` per-model prebuild requirement |
-| **PREDICTED** | a residual `bwdpi_source` `bin` / `modules` concern |
+| kernel + modules | built |
+| `libshared` / `libbcm` / `sysstate` | built |
+| **`rc`** | built, consuming **all 42** of its own flat `rc/prebuild` objects |
+| **`httpd`** | built, from **all 4** of its own package objects |
+| **bwdpi** | `libbwdpi` and `libbwdpi_sql` built |
+| **`libwebapi`** | **not present, and never requested** |
 
-## rc — scale of the requirement
+### Buildability vs image soundness — not the same claim
 
-- The donor/reference `rc` prebuild directory contains **52 object files**.
-- Under the **current** configuration, only **14** are active.
-- **13 of those 14 have no corresponding source in the examined tree.**
-- Under the **official 388.34458-derived RT-AXE7800 configuration**, analysis predicts
-  **43** active objects.
-- **42 of those 43 have no corresponding source in the examined tree.**
+**RAW GPL BUILDABILITY: ESTABLISHED.**
+**FINAL IMAGE SOUNDNESS: NOT ESTABLISHED.**
 
-> This is an **analytical configuration projection**. It is **not** a claim that the internal
-> build configuration of 388_25206 is byte-for-byte identical to the reconstruction.
+`make` exiting 0 is not evidence of a sound image. Nothing here has been booted, flashed or
+validated, and the build tolerates a number of non-fatal errors by ASUS's own design (audited
+individually; all belong to alternate packaging paths or optional sample programs).
 
-Several of the active objects are **model-unique across all 17 available model directories**.
-**No cross-model rc donor has been accepted.**
+Any artifact is classified only as **RAW ASUS GPL BUILD ARTIFACT / UNTESTED** — never
+flash-safe, boot-validated, runtime-validated or Merlin-compatible. No artifact is published
+here.
 
-## httpd
+Host requirements are ordinary and documented: the packages ASUS's own `README.TXT` lists
+(including `docbook-xsl`), plus an Autoconf version contemporary with the package's autotools
+inputs, provided through an isolated user-owned prefix rather than by changing the system
+toolchain.
 
-- `httpd` has the **analogous model-specific prebuild mechanism**.
-- The **RT-AXE7800 directory is absent**.
-- **Four** per-model objects are involved in the examined lineage.
-- **None has corresponding source in the examined tree.**
+## What this means for the Merlin port
 
-This is **STRUCTURALLY PRESENT** — it is not yet a demonstrated full-build blocker, because no
-build has reached it.
+The current Merlin-side blocker is `libwebapi/prebuild/RT-AXE7800/priv_webapi.o`.
 
-## Model-set observation
+**The raw GPL generation contains no `libwebapi` component at all and never asks for it**, yet
+still builds `rc` and `httpd` — the two consumers of `-lwebapi` in the newer Merlin tree — to
+complete executables.
 
-In the examined lineage, `libwebapi`, `rc`, `httpd` and `bwdpi_source` share the **same
-17-model prebuild-directory set**, and **RT-AXE7800 is absent from all four**.
+So the `priv_webapi.o` requirement is a **newer-generation integration boundary**, not evidence
+that GPL 388.34458 is incomplete. That reframes the whole problem: the question is no longer
+"which prebuilt is missing from the package?" but "what generation gap sits between the
+package and the newer Merlin lineage?"
 
-Recorded as an observation only. **No inference about ASUS's intent is drawn from it.**
+> ### Do not project newer-Merlin figures backward
+>
+> Earlier analyses of the **newer Merlin** tree produced rc counts such as **8/14** and
+> **37/43**. Those are integration analyses of that newer generation. They describe what a
+> newer-Merlin configuration would want; **they must not be applied to raw GPL 388.34458**,
+> which needs exactly what its own package ships — all 42 of its flat objects, no more.
+
+## Active research direction
+
+**Fuller GPL-generation merge-scope analysis.** The aim is to determine the minimum coherent
+generation scope that must be reconciled to add RT-AXE7800 to the newer Merlin lineage —
+rather than continuing to chase one missing prebuilt at a time.
+
+No merge has been started, and none is implied by this milestone.
 
 ## ASUS source status
 
-**No newer publicly discoverable RT-AXE7800 GPL package was found through the ASUS support
-API, verified deterministic CDN paths, and the public history examined.**
-
-This is a statement about what was found. It is **not** a claim that ASUS never published one.
-
-**An ASUS request for the corresponding source and/or build inputs is pending.**
-See [`docs/MISSING-BUILD-INPUTS.md`](docs/MISSING-BUILD-INPUTS.md).
+A newer or current corresponding RT-AXE7800 source package remains **useful**, particularly for
+the newer-generation `libwebapi` and related interfaces. It is **no longer a prerequisite for
+research progress**: building from the published GPL generation is now a demonstrated route.
 
 ## Wireless
 
-**Wireless runtime compatibility remains unresolved, particularly cross-version BCM6715 DHD
-firmware / CLM / regulatory compatibility relative to stock 388_25206.**
+**Wireless runtime compatibility remains unresolved**, particularly cross-version BCM6715 DHD
+firmware / CLM / regulatory compatibility relative to shipping firmware.
 
 ## No donor substitution
 
-**No donor object has been imported merely to make the build pass.** Candidate objects from
-other models were analyzed against the shipped runtime; where they diverged, they were rejected
-and the blocker was left in place. Cross-model substitution could introduce model-specific
-ABI, feature, or board-behavior mismatches and would invalidate the provenance assumptions of
-this port.
+**No donor object has been imported merely to make a build pass.** Candidate objects from other
+models were analyzed and rejected where they diverged. Cross-model substitution could introduce
+model-specific ABI, feature, or board-behavior mismatches and would invalidate the provenance
+assumptions of this port.
 
 ## Layout
 
-    docs/MISSING-BUILD-INPUTS.md   what is missing and why substitution is not valid
-    docs/STATUS-2026-08-18.md      dated status snapshot
+    docs/MISSING-BUILD-INPUTS.md   what is and is not missing, per generation
+    docs/STATUS-2026-08-19.md      dated status snapshot
     prep/                          blocker map, build-input manifest, stock ABI index
     research/public-oracle/        public lineage/provenance research
     repro/clean-replay-v2/         replay script, patches, provenance manifests

@@ -8,7 +8,10 @@
 > features are enabled later"* — that was **wrong**: it is reachable in the current
 > configuration and is the **current clean blocker**.
 >
-> Kept for the record. See [`../docs/STATUS-2026-08-18.md`](../docs/STATUS-2026-08-18.md).
+> Kept for the record. See [`../docs/STATUS-2026-08-19.md`](../docs/STATUS-2026-08-19.md).
+>
+> Note also that this map describes the **newer Merlin** lineage. The raw GPL 388.34458
+> generation has a different component set and builds `rc` and `httpd` without `libwebapi`.
 
 Audited: clean-replay-v2 tree at RMerlin pin `ccd139a31d94de15d2da744083dbafbcfe97dcdf`.
 Read-only. No donor file was copied or substituted.
