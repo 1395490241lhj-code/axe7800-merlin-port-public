@@ -10,7 +10,7 @@
 >
 > Kept for the record. See [`../docs/STATUS-2026-08-19.md`](../docs/STATUS-2026-08-19.md).
 >
-> Note also that this map describes the **newer Merlin** lineage. The raw GPL 388.34458
+> Note also that this map describes the **pinned Merlin union** lineage. The raw GPL 388.34458
 > generation has a different component set and builds `rc` and `httpd` without `libwebapi`.
 
 Audited: clean-replay-v2 tree at RMerlin pin `ccd139a31d94de15d2da744083dbafbcfe97dcdf`.

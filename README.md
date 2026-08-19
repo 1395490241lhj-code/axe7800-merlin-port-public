@@ -19,7 +19,7 @@ Two separate tracks are now in play, and keeping them apart matters:
 
 | Track | What it is | Status |
 |---|---|---|
-| **Merlin port** | adding RT-AXE7800 to the newer Asuswrt-Merlin lineage | blocked at a newer-generation interface |
+| **Merlin port** | adding RT-AXE7800 to the pinned Merlin union lineage | blocked at a cross-product-line integration boundary |
 | **Standalone GPL build** | building RT-AXE7800 from ASUS's own published GPL package | **works** |
 
 Merlin baseline: **`asuswrt-merlin.ng`, branch `3006.102-wifi6`, commit
@@ -69,35 +69,54 @@ toolchain.
 
 The current Merlin-side blocker is `libwebapi/prebuild/RT-AXE7800/priv_webapi.o`.
 
-**The raw GPL generation contains no `libwebapi` component at all and never asks for it**, yet
-still builds `rc` and `httpd` — the two consumers of `-lwebapi` in the newer Merlin tree — to
+**The raw GPL package contains no `libwebapi` component at all and never asks for it**, yet
+still builds `rc` and `httpd` — the two consumers of `-lwebapi` in the pinned Merlin tree — to
 complete executables.
 
-So the `priv_webapi.o` requirement is a **newer-generation integration boundary**, not evidence
+So the `priv_webapi.o` requirement is a **cross-product-line integration boundary**, not evidence
 that GPL 388.34458 is incomplete. That reframes the whole problem: the question is no longer
-"which prebuilt is missing from the package?" but "what generation gap sits between the
-package and the newer Merlin lineage?"
+"which prebuilt is missing from the package?" but "what divergence sits between this product
+line and the pinned Merlin union lineage?"
 
-> ### Do not project newer-Merlin figures backward
+### Product-line divergence, not generation precedence
+
+The pinned Merlin tree is a **union of ASUS product-line drops**, not a single later generation:
+
+- `libwebapi` entered Merlin from the **RT-AX88U / 5.02axhnd** line, at build **388_22525**.
+- The RT-AXE7800 GPL package is the **5.04axhnd.675x** line, at build **388_34458**.
+- The RT-AXE7800 package has no `libwebapi` and builds successfully without it.
+
+The RT-AXE7800 build number is *higher*, so the package cannot be described as predating
+libwebapi. The two product lines simply diverged: one adopted the component, the other had not.
+
+**Numeric firmware build numbers are not comparable across different product lines, and no
+chronology is inferred from them here.**
+
+> ### Do not project pinned-Merlin figures backward
 >
-> Earlier analyses of the **newer Merlin** tree produced rc counts such as **8/14** and
-> **37/43**. Those are integration analyses of that newer generation. They describe what a
-> newer-Merlin configuration would want; **they must not be applied to raw GPL 388.34458**,
+> Earlier analyses of the **pinned Merlin** tree produced rc counts such as **8/14** and
+> **37/43**. Those are integration analyses of that union lineage. They describe what a
+> Merlin-side configuration would want; **they must not be applied to raw GPL 388.34458**,
 > which needs exactly what its own package ships — all 42 of its flat objects, no more.
+>
+> Likewise, differences derived from **set comparison** between the two trees' prebuilt
+> inventories are not, by themselves, demonstrated build blockers. Only `priv_webapi.o` has
+> actually been observed to stop a Merlin-side build.
 
 ## Active research direction
 
-**Fuller GPL-generation merge-scope analysis.** The aim is to determine the minimum coherent
-generation scope that must be reconciled to add RT-AXE7800 to the newer Merlin lineage —
-rather than continuing to chase one missing prebuilt at a time.
+**Merge-scope and compatibility-closure analysis.** The aim is to determine the minimum coherent
+scope that must be reconciled to add RT-AXE7800 to the pinned Merlin union lineage — rather
+than continuing to chase one missing prebuilt at a time.
 
 No merge has been started, and none is implied by this milestone.
 
 ## ASUS source status
 
-A newer or current corresponding RT-AXE7800 source package remains **useful**, particularly for
-the newer-generation `libwebapi` and related interfaces. It is **no longer a prerequisite for
-research progress**: building from the published GPL generation is now a demonstrated route.
+A current corresponding RT-AXE7800 source package remains **useful**, particularly for the
+`libwebapi` interface and related Merlin-side integration requirements at the pinned baseline.
+It is **no longer a prerequisite for research progress**: building from the published GPL
+package is now a demonstrated route.
 
 ## Wireless
 

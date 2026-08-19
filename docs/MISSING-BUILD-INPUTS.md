@@ -23,15 +23,18 @@ documented host prerequisites.
 > absent from the package. That was wrong — it came from an incomplete extraction. Both are
 > shipped and both are consumed.
 
-## Newer Merlin lineage — one interface is missing
+## Pinned Merlin union lineage — one interface is missing
 
     release/src/router/libwebapi/prebuild/RT-AXE7800/priv_webapi.o
 
-The newer Merlin tree adds a `libwebapi` component that `rc` and `httpd` link against. It
-requires a model-specific object that the 388.34458 generation predates and never had.
+The pinned Merlin tree carries a `libwebapi` component that `rc` and `httpd` link against. It
+requires a model-specific object that the 388.34458 package does not contain and never
+references. `libwebapi` reached Merlin from a different ASUS product line (RT-AX88U /
+5.02axhnd, build 388_22525) than the RT-AXE7800 package (5.04axhnd.675x, build 388_34458).
 
-Because the raw generation builds `rc` and `httpd` **without** `libwebapi` existing at all,
-this is a **generation boundary**, not a hole in the published package.
+Because the raw package builds `rc` and `httpd` **without** `libwebapi` existing at all, this is
+a **cross-product-line integration boundary**, not a hole in the published package. The
+RT-AXE7800 build number is the higher of the two, so no chronological ordering is claimed.
 
 ### Why cross-model substitution is not the answer
 
@@ -43,7 +46,7 @@ do not. **No candidate was adopted, and no donor binary is published here.**
 ## ASUS source status
 
 A newer or current corresponding RT-AXE7800 source package remains **useful**, particularly for
-the newer-generation `libwebapi` and related interfaces.
+the `libwebapi` interface and related Merlin-side integration requirements.
 
 It is **no longer a prerequisite for progress.** Building from the published GPL generation is
 a demonstrated route, and generation-merge analysis can proceed without it.
