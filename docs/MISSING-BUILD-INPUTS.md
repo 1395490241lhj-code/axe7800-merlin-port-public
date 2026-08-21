@@ -1,5 +1,11 @@
 # What is missing — per generation
 
+> ## ⚠️ SUPERSEDED — Public v3
+>
+> This document predates the deterministic clean replay. The current first blocker is
+> **`invalid_nvram_get_program` / `invalid_program_check`** at the `write_smb_conf` link,
+> **not** `priv_webapi.o`. See [`README.md`](../README.md) for current state.
+
 Product: ASUS RT-AXE7800 (BCM6756 / 96756GW, 32-bit ARM).
 
 The word "missing" only means something once you say **which generation** you are building.

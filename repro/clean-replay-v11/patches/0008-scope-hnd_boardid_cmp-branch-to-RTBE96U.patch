@@ -1,0 +1,18 @@
+diff --git a/release/src/router/shared/model.c b/release/src/router/shared/model.c
+index c74a566cc5..30ca70eca4 100644
+--- a/release/src/router/shared/model.c
++++ b/release/src/router/shared/model.c
+@@ -480,7 +480,12 @@ int get_cf_id(int model, char *name) {
+ #endif
+ 	}
+ 
+-#ifdef RTCONFIG_HND_ROUTER_AX
++/* RT-BE96U hardware-variant disambiguation. hnd_boardid_cmp() inspects the LOCAL
++ * board id, so this is only meaningful when the running device IS an RT-BE96U.
++ * Scoped to that model so other builds do not carry a link dependency on a symbol
++ * their branch can never reach. Convention matches defined(<MODEL>) guards used
++ * throughout this tree (41 sites) and in this same function above. */
++#if defined(RTCONFIG_HND_ROUTER_AX) && defined(RTBE96U)
+ 	if(model == MODEL_RTBE96U) {
+ 		if(hnd_boardid_cmp("RT-BE96U") == 0)
+ 			return model + CFID_BASE_3;

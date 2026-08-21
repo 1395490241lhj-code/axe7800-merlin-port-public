@@ -1,0 +1,36 @@
+diff --git a/release/src/router/shared/misc.c b/release/src/router/shared/misc.c
+index c2eb1d03e1..ce76810527 100644
+--- a/release/src/router/shared/misc.c
++++ b/release/src/router/shared/misc.c
+@@ -5710,11 +5710,13 @@ int check_re_in_macfilter(int unit, char *mac)
+ 	char *nv, *nvp, *b;
+ 	int exist = 0;
+ 
++#ifdef RTCONFIG_MULTILAN_CFG
+ 	if (get_fh_if_prefix_by_unit(unit, prefix, sizeof(prefix))) {
+ 		trim_space(prefix);
+ 		strncat(prefix, "_", 1);
+ 	}
+ 	else
++#endif
+ 	{
+ #ifdef RTCONFIG_AMAS
+ 		if (nvram_get_int("re_mode") == 1)
+diff --git a/release/src/router/shared/sysdeps/broadcom/broadcom.c b/release/src/router/shared/sysdeps/broadcom/broadcom.c
+index e96c9e762a..33808f0a7b 100644
+--- a/release/src/router/shared/sysdeps/broadcom/broadcom.c
++++ b/release/src/router/shared/sysdeps/broadcom/broadcom.c
+@@ -1804,11 +1804,13 @@ void update_macfilter_relist()
+ 		foreach (word, wl_ifnames, next) {
+ 			SKIP_ABSENT_BAND_AND_INC_UNIT(unit);
+ 
++#ifdef RTCONFIG_MULTILAN_CFG
+ 			if (get_fh_if_prefix_by_unit(unit, prefix, sizeof(prefix))) {
+ 				trim_space(prefix);
+ 				strncat(prefix, "_", 1);
+ 			}
+ 			else
++#endif
+ 			{
+ #ifdef RTCONFIG_AMAS
+ 				if (nvram_get_int("re_mode") == 1)

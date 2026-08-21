@@ -1,5 +1,11 @@
 # RT-AXE7800 — future blocker map (static audit)
 
+> ## ⚠️ SUPERSEDED — Public v3
+>
+> This document predates the deterministic clean replay. The current first blocker is
+> **`invalid_nvram_get_program` / `invalid_program_check`** at the `write_smb_conf` link,
+> **not** `priv_webapi.o`. See [`README.md`](../README.md) for current state.
+
 > ## ⚠️ HISTORICAL — predictions partly borne out, partly wrong
 >
 > This audit was made at the clean-replay-v2 milestone. Recorded outcome:

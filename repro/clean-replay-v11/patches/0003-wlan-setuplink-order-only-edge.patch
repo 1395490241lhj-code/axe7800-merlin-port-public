@@ -1,0 +1,20 @@
+--- a/release/src-rt-5.04axhnd.675x/router-sysdep.rt-axe7800/wlan/Makefile
++++ b/release/src-rt-5.04axhnd.675x/router-sysdep.rt-axe7800/wlan/Makefile
+@@ -211,6 +211,17 @@
+ 	-cp -f $(TOP_PLATFORM)/wlan/nvram/$(PRBM_DIR)/libnvram.so nvram/
+ 	make -C nvram dynamic install
+ endif
++
++# RT-AXE7800 replay fix: setuplink creates the generated src/ and components/ symlinks that
++# $(APPS_UTILS_DIR) (= $(COMPDIR)/apps/utils) and other consumers require. Upstream declares
++# the order-only edge below ONLY inside the PREBUILT_BCMBIN != 1 branch above. With
++# PREBUILT_BCMBIN=1 (the normal public-build state: $(HND_SRC)/upb.mak does not exist) that
++# edge disappears, while the unconditional "all: $(WLANAPP_DIRS) wifi_apps" rule further down
++# still pulls util into all. util's recipe installs $(APPS_UTILS_DIR)/WlGetDriver*.sh, so it
++# can run before setuplink has created components/ -- reproducibly, under BOTH serial and
++# parallel make. Re-declaring the same order-only edge unconditionally is idempotent (make
++# merges order-only prerequisites; setuplink is .PHONY and still runs exactly once).
++$(WLANAPP_DIRS): | setuplink
+ install:
+ 	@echo done
+ 

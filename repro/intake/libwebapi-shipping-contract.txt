@@ -1,0 +1,56 @@
+# RT-AXE7800 libwebapi shipping consumer contract
+#
+# The set of libwebapi.so exports that same-model SHIPPING consumers actually import.
+# Derived read-only from the verified stock oracle, firmware 3.0.0.4.388_25206:
+#   rootfs/usr/lib/libwebapi.so  sha256 2a236d64f8971a734ec70e6936eaf4302de80ea6fe7d043444608f6401ac9c84
+#     exports 91 dynamic symbols
+#   consumers by DT_NEEDED + imported-symbol evidence (NOT filenames):
+#     usr/sbin/httpd  (sha256 766beb1619352889...)  imports 33
+#     sbin/rc         (sha256 d4135c8614e18f4b...)  imports  2
+#     sbin/wps_pbcd                                 imports  0  (DT_NEEDED present, pure over-linkage)
+#   union = the 34 symbols below
+#
+# ACCEPTANCE USE: a candidate RT-AXE7800 388_25xxx package satisfies the libwebapi gap only if
+# it supplies (as source or as authentic same-model prebuilt) implementations for every symbol
+# here that Merlin's open webapi.c does not already define. Another model's ABI is NOT an
+# acceptance criterion.
+#
+# Of these 34, pinned Merlin's open webapi.c defines 12 (marked OPEN below). The remainder are
+# the residual private contract. Four are security validators - check_cmd_injection_blacklist,
+# check_xss_blacklist, detect_vul_scan, validate_apply_input_value - and must never be
+# reimplemented by inference.
+#
+b64_decode
+check_cfg_changed	OPEN
+check_cmd_injection_blacklist
+check_xss_blacklist
+detect_vul_scan
+do_chpass
+gen_jffs_backup_profile
+gen_server_ipsec_file	OPEN
+gen_server_ovpn_file	OPEN
+get_ASUS_privacy_policy_info
+get_app_mnt
+get_rwd_table	OPEN
+get_ui_support_info
+get_wl_nband_list	OPEN
+httpd_nvram_commit	OPEN
+is_amas_support
+is_cfg_server_ready	OPEN
+is_hnd
+is_noFwManual
+jffs_backup_profile_t
+notify_cfg_server	OPEN
+save_changed_param	OPEN
+set_ASUS_EULA
+set_ASUS_NEW_EULA
+set_ASUS_privacy_policy
+set_app_mnt
+start_config_sync_cgi
+upload_blacklist_config_cgi
+upload_config_sync_cgi
+upload_jffs_profile
+upload_server_ipsec_cert_cgi	OPEN
+upload_server_ovpn_cert_cgi	OPEN
+validate_apply_input_value
+wl_nband_to_wlx	OPEN

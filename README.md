@@ -10,133 +10,171 @@
 > - This repository documents **research and reproducibility. It is not a firmware release.**
 > - No router flash, NVRAM, MTD, bootloader or partition operation is part of this workflow.
 
-## What this is
+**Public v3 — deterministic clean replay established; waiting for a matching 388_25xxx source package.**
 
 A reproducibility lab for porting Asuswrt-Merlin to the **ASUS RT-AXE7800**
 (Broadcom **BCM6756**, profile **96756GW**, 32-bit ARM).
-
-Two separate tracks are now in play, and keeping them apart matters:
-
-| Track | What it is | Status |
-|---|---|---|
-| **Merlin port** | adding RT-AXE7800 to the pinned Merlin union lineage | blocked at a cross-product-line integration boundary |
-| **Standalone GPL build** | building RT-AXE7800 from ASUS's own published GPL package | **works** |
 
 Merlin baseline: **`asuswrt-merlin.ng`, branch `3006.102-wifi6`, commit
 `ccd139a31d94de15d2da744083dbafbcfe97dcdf`**. That pinned lineage is *our* reproducibility
 baseline; it is **not** claimed to be the source tree ASUS used for any retail firmware.
 
-## Standalone GPL build — ESTABLISHED
+## Current state model
 
-The official **RT-AXE7800 GPL 3.0.0.4.388.34458** package builds RT-AXE7800 **by itself**.
+```
+Published ASUS GPL 388.34458
+    -> standalone buildable and internally coherent
+    -> an older / different userspace generation than the shipping firmware
 
-- Validated against a **complete** extraction of the package (an earlier, much smaller partial
-  extraction had produced misleading "absent" results and has been retired).
-- A **clean one-shot `make rt-axe7800` from a brand-new extraction succeeds**, end to end,
-  through kernel, drivers, userspace, rootfs and image packaging.
-- Reproduced twice from independent pristine extractions.
+Pinned Merlin + RT-AXE7800 integration
+    -> deterministic clean replay established (repro/clean-replay-v11)
+    -> first clean blocker:
+           invalid_nvram_get_program
+           invalid_program_check
+       at the write_smb_conf / libdisk link boundary
+    -> downstream known gaps (NOT the current first blocker):
+           libwebapi private contract
+           s46comm-generation S46
+    -> waiting for a matching current-generation ASUS source package
+```
 
-What the raw generation does with its own contents:
+## Where the port actually stands
 
-| Component | Result |
+| | status |
 |---|---|
-| kernel + modules | built |
-| `libshared` / `libbcm` / `sysstate` | built |
-| **`rc`** | built, consuming **all 42** of its own flat `rc/prebuild` objects |
-| **`httpd`** | built, from **all 4** of its own package objects |
-| **bwdpi** | `libbwdpi` and `libbwdpi_sql` built |
-| **`libwebapi`** | **not present, and never requested** |
+| Standalone GPL 388.34458 build | **established** — builds from ASUS's own published package |
+| Merlin-port clean replay | **established** — one script, zero manual steps, from the pinned commit |
+| Current clean first blocker | `invalid_nvram_get_program`, `invalid_program_check` |
+| Downstream known gaps | `libwebapi` private contract · `s46comm`-generation S46 |
+| Merlin-side cross-product adaptations | resolved (see below) |
+| Technical work | **intentionally frozen** pending authentic current-generation source/supply |
 
-### Buildability vs image soundness — not the same claim
+### The clean replay
 
-**RAW GPL BUILDABILITY: ESTABLISHED.**
-**FINAL IMAGE SOUNDNESS: NOT ESTABLISHED.**
+[`repro/clean-replay-v11`](repro/clean-replay-v11/README.md) reconstructs the whole legitimate
+integration state from the pinned commit in a single pass, with no manual mutable-worktree
+state: model/config integration, authentic same-model GPL 388.34458 supply staged **only**
+after per-file SHA-256 verification against a committed manifest, the accepted source
+adaptations, and assertions that abort on any synthetic artifact reaching a supply directory.
 
-`make` exiting 0 is not evidence of a sound image. Nothing here has been booted, flashed or
-validated, and the build tolerates a number of non-fatal errors by ASUS's own design (audited
-individually; all belong to alternate packaging paths or optional sample programs).
+Determinism was demonstrated across two independent fresh lineages: identical adapted-source
+hashes, and the same first blocker both times.
 
-Any artifact is classified only as **RAW ASUS GPL BUILD ARTIFACT / UNTESTED** — never
-flash-safe, boot-validated, runtime-validated or Merlin-compatible. No artifact is published
-here.
+**No synthetic, stub, or donor object is part of the clean port.** The replay refuses to
+proceed if one is present.
 
-Host requirements are ordinary and documented: the packages ASUS's own `README.TXT` lists
-(including `docbook-xsl`), plus an Autoconf version contemporary with the package's autotools
-inputs, provided through an isolated user-owned prefix rather than by changing the system
-toolchain.
+### Current first blocker
 
-## What this means for the Merlin port
+    make[5]: *** [Makefile:77: write_smb_conf] Error 1     (libdisk)
 
-The current Merlin-side blocker is `libwebapi/prebuild/RT-AXE7800/priv_webapi.o`.
+    undefined reference to `invalid_nvram_get_program'
+    undefined reference to `invalid_program_check'
 
-**The raw GPL package contains no `libwebapi` component at all and never asks for it**, yet
-still builds `rc` and `httpd` — the two consumers of `-lwebapi` in the pinned Merlin tree — to
-complete executables.
+Two symbols, at the `write_smb_conf` link. They have no open-source caller, are required by a
+prebuilt `libnvram`, and the shipping firmware exercises the corresponding behaviour. Their
+names indicate validation semantics, so **they are deliberately not stubbed, guessed, or
+bypassed** — a permissive replacement could silently weaken input validation.
 
-So the `priv_webapi.o` requirement is a **cross-product-line integration boundary**, not evidence
-that GPL 388.34458 is incomplete. That reframes the whole problem: the question is no longer
-"which prebuilt is missing from the package?" but "what divergence sits between this product
-line and the pinned Merlin union lineage?"
+`libwebapi`/`priv_webapi` and `rc`/`s46comm` are demonstrated **downstream** gaps behind this
+boundary. Earlier public snapshots described `priv_webapi.o` as the current Merlin-side
+blocker; that is **superseded** — it was only reachable in earlier runs that had crossed the
+`invalid_*` boundary using diagnostic objects, which are excluded from the clean port.
 
-### Product-line divergence, not generation precedence
+## Generation, not omission
 
-The pinned Merlin tree is a **union of ASUS product-line drops**, not a single later generation:
+An audit of published GPL 388.34458 versus the shipping 388_25206 firmware found the
+difference between them is **narrow and localized**, not systemic. Across roughly twenty
+shared libraries present in both, exported-ABI deltas are single-digit symbol counts, and
+several are ABI-identical. Three areas account for essentially all of the divergence:
 
-- `libwebapi` entered Merlin from the **RT-AX88U / 5.02axhnd** line, at build **388_22525**.
-- The RT-AXE7800 GPL package is the **5.04axhnd.675x** line, at build **388_34458**.
-- The RT-AXE7800 package has no `libwebapi` and builds successfully without it.
+| area | published 388.34458 | shipping 388_25206 |
+|---|---|---|
+| `shared` provider surface | older surface | 44 exports our build does not have |
+| `libwebapi` | component not present in the package | ships and is actively used |
+| `rc` / S46 | `s46map_rptd` generation | `s46comm` generation |
 
-The RT-AXE7800 build number is *higher*, so the package cannot be described as predating
-libwebapi. The two product lines simply diverged: one adopted the component, the other had not.
+Notably, `libnvram` itself is **ABI-identical** between the two — the current blocker is about
+which component *provides* those two symbols, not about `nvram` differing.
 
-**Numeric firmware build numbers are not comparable across different product lines, and no
-chronology is inferred from them here.**
+Pinned Merlin generally tracks the **shipping** 388_25206 generation rather than the published
+388.34458 one.
 
-> ### Do not project pinned-Merlin figures backward
->
-> Earlier analyses of the **pinned Merlin** tree produced rc counts such as **8/14** and
-> **37/43**. Those are integration analyses of that union lineage. They describe what a
-> Merlin-side configuration would want; **they must not be applied to raw GPL 388.34458**,
-> which needs exactly what its own package ships — all 42 of its flat objects, no more.
->
-> Separately: a prebuilt object being **configuration-active** at the pinned baseline is not
-> the same as it being a demonstrated build blocker. Only `priv_webapi.o` has actually been
-> observed to stop a Merlin-side build; anything later in the build order is unobserved.
+> **GPL 388.34458 is not described here as incomplete.** It is internally coherent and
+> standalone-buildable for its own generation. It simply is not the same generation as the
+> currently shipping firmware. Nothing in this repository asserts that ASUS withheld anything.
 
-## Active research direction
+## The external dependency
 
-**Merge-scope and compatibility-closure analysis.** The aim is to determine the minimum coherent
-scope that must be reconciled to add RT-AXE7800 to the pinned Merlin union lineage — rather
-than continuing to chase one missing prebuilt at a time.
+The key remaining input is a source/GPL package matching RT-AXE7800 firmware
+`3.0.0.4.388_25206`, or the current `388_25xxx` generation.
 
-No merge has been started, and none is implied by this milestone.
+**No matching public package has been located.** ASUS's published RT-AXE7800 GPL package is
+388.34458; searches of the support pages and the CDN naming convention did not locate a
+package for the `388_25xxx` line. This is reported as *not located* — it is **not** a claim
+that such a package does or does not exist.
 
-## ASUS source status
+A request for the complete matching source package has been submitted through ASUS's normal
+open-source channel. Correspondence itself is not published here.
 
-A current corresponding RT-AXE7800 source package remains **useful**, particularly for the
-`libwebapi` interface and related Merlin-side integration requirements at the pinned baseline.
-It is **no longer a prerequisite for research progress**: building from the published GPL
-package is now a demonstrated route.
+## If a package arrives
 
-## Wireless
+[`repro/intake`](repro/intake/ACCEPTANCE-MATRIX.md) contains the read-only plan for evaluating
+one objectively:
 
-**Wireless runtime compatibility remains unresolved**, particularly cross-version BCM6715 DHD
-firmware / CLM / regulatory compatibility relative to shipping firmware.
+- [`ACCEPTANCE-MATRIX.md`](repro/intake/ACCEPTANCE-MATRIX.md) — per-gap PASS / FAIL /
+  INCONCLUSIVE criteria. File absence alone is never FAIL.
+- [`PACKAGE-PROVENANCE-CHECKLIST.md`](repro/intake/PACKAGE-PROVENANCE-CHECKLIST.md) —
+  identity and provenance fields. Filenames and version numbers are treated as unreliable:
+  388.34458 carries a *higher* build number than 388_25206 while being older and a different
+  generation.
+- [`GENERATION-DELTA-AUDIT.md`](repro/intake/GENERATION-DELTA-AUDIT.md) — the measured
+  three-way comparison.
+- [`CROSS-PRODUCT-DEPENDENCY-MAP.md`](repro/intake/CROSS-PRODUCT-DEPENDENCY-MAP.md) — which
+  dependencies a matching package would *not* fix, because Merlin inherited them from other
+  ASUS product lines.
+- [`PRE-ASUS-CLOSURE.md`](repro/intake/PRE-ASUS-CLOSURE.md) — final classifications.
+- [`tools/inspect-gpl-generation-gaps.sh`](tools/inspect-gpl-generation-gaps.sh) — read-only
+  generation-gap inspector. Complements
+  [`tools/verify-asus-gpl-drop.sh`](tools/verify-asus-gpl-drop.sh), which covers package
+  identity. Neither writes to, extracts into, or modifies a supplied package.
 
-## No donor substitution
+## Merlin-side adaptations (independent of ASUS)
 
-**No donor object has been imported merely to make a build pass.** Candidate objects from other
-models were analyzed and rejected where they diverged. Cross-model substitution could introduce
-model-specific ABI, feature, or board-behavior mismatches and would invalidate the provenance
-assumptions of this port.
+Two dependencies that pinned Merlin inherited from *other* ASUS product lines were resolved
+with model-correct source guards — **not** stubs:
+
+| symbol | inherited from | resolution |
+|---|---|---|
+| `get_fh_if_prefix_by_unit` | RT-BE86U lineage | guarded on `RTCONFIG_MULTILAN_CFG`, which this model does not set |
+| `hnd_boardid_cmp` | RT-BE96U lineage | its branch scoped to the model it is written for; the branch was link-live but runtime-dead here |
+
+Both patches are published in
+[`repro/clean-replay-v11/patches`](repro/clean-replay-v11/patches). No currently demonstrated
+blocker is of a kind that a matching ASUS package could not address.
+
+## Why the freeze
+
+Every remaining unknown — whether a matching package supplies the two `invalid_*` symbols,
+ships `libwebapi`, or is the `s46comm` generation — is decidable only by examining such a
+package. The intake tooling to decide it already exists. Continuing to build or adapt would
+mean guessing at private validation semantics, which this project does not do.
 
 ## Layout
 
-    docs/MISSING-BUILD-INPUTS.md   what is and is not missing, per generation
-    docs/STATUS-2026-08-19.md      dated status snapshot
-    prep/                          blocker map, build-input manifest, stock ABI index
-    research/public-oracle/        public lineage/provenance research
-    repro/clean-replay-v2/         replay script, patches, provenance manifests
-    tools/verify-asus-gpl-drop.sh  read-only verifier for a candidate source drop
+    repro/clean-replay-v11/   deterministic replay mechanism, patch series, provenance
+    repro/clean-replay-v2/    earlier milestone (historical)
+    repro/intake/             acceptance matrix, provenance checklist, audits
+    tools/                    read-only package verification and inspection
+    research/public-oracle/   public-source lineage analysis
+    prep/, docs/              earlier notes; see each file's header for status
 
-See [`NOTICE.md`](NOTICE.md) for provenance and licensing.
+## Scope and conduct
+
+- Stock firmware is used **only** as a read-only ABI/runtime oracle, by observation of
+  exported and imported symbol names. No proprietary implementation is reverse engineered,
+  reconstructed, or republished.
+- Embedded credential and API-key symbols are recorded by existence and size only. Their
+  values are never read or published.
+- No donor binaries from other models are used as build inputs. Other models' objects appear
+  only as read-only symbol oracles in analysis.
+- No feature is disabled merely to make a build progress.

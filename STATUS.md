@@ -7,10 +7,13 @@
 > **resolved** with authentic ASUS GPL 388.34458 inputs, and the build now stops much later,
 > at `libwebapi/prebuild/RT-AXE7800/priv_webapi.o`.
 >
-> **See [`docs/STATUS-2026-08-19.md`](docs/STATUS-2026-08-19.md) for the current status.**
+> **See [`README.md`](README.md) for the current status.**
 >
-> Since that snapshot: the standalone GPL build is **established**, and the `rc`/`httpd`
-> "absent supply" framing has been corrected — the package ships both.
+> Since that snapshot: the standalone GPL build is **established**, the `rc`/`httpd`
+> "absent supply" framing has been corrected (the package ships both), and — as of Public
+> v3 — a deterministic clean replay exists whose first blocker is
+> **`invalid_nvram_get_program` / `invalid_program_check`**, not `priv_webapi.o`.
+> See [`README.md`](README.md) for current state.
 > The "Established facts" and "Intentionally not attempted" sections below remain accurate and
 > are kept for the record.
 

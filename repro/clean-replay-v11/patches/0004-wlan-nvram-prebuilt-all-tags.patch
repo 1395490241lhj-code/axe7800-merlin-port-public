@@ -1,0 +1,20 @@
+--- a/release/src-rt-5.04axhnd.675x/router-sysdep.rt-axe7800/wlan/nvram/Makefile
++++ b/release/src-rt-5.04axhnd.675x/router-sysdep.rt-axe7800/wlan/nvram/Makefile
+@@ -167,7 +167,16 @@
+ ifneq ($(PREBUILT_BCMBIN),1)
+ all_tags += libnvram nvram  $(KERNEL_NVRAM_FILE_NAME)
+ else
+-all_tags:=
++# RT-AXE7800 replay fix: with PREBUILT_BCMBIN=1 upstream empties all_tags, so neither the
++# libnvram nor the nvram target runs -- yet the "all" recipe below still unconditionally does
++#     install -m 755 nvram      $(INSTALL_DIR)/bin
++#     install -m 755 libnvram.so $(INSTALL_DIR)/lib
++# and fails with "install: cannot stat 'nvram'". Both targets already handle the prebuilt case
++# themselves (there are no *.c sources here, so they resolve to "cp -f ./prebuilt/<artifact> ."),
++# so naming them is exactly what the install step requires and introduces no compilation.
++# The caller in ../Makefile copies only libnvram.so into this directory, never the nvram
++# executable, which is why libnvram.so exists here but nvram does not.
++all_tags := libnvram nvram
+ endif
+ else
+ all_tags:=
