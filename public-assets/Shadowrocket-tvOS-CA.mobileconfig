@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+	<key>PayloadIdentifier</key>
+	<string>com.shadowrocket.tvos.ca</string>
+	<key>PayloadUUID</key>
+	<string>A079B746-6113-4568-88A2-7794AC83FEFE</string>
+	<key>PayloadDisplayName</key>
+	<string>Shadowrocket tvOS CA</string>
+	<key>PayloadDescription</key>
+	<string>Installs the Shadowrocket root CA used by the existing Shadowrocket configuration. Contains the public CA certificate only; no private key.</string>
+	<key>PayloadOrganization</key>
+	<string>Shadowrocket</string>
+	<key>PayloadRemovalDisallowed</key>
+	<false/>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>PayloadType</key>
+			<string>com.apple.security.root</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+			<key>PayloadIdentifier</key>
+			<string>com.shadowrocket.tvos.ca.certificate</string>
+			<key>PayloadUUID</key>
+			<string>1FE2B4B4-5631-4874-9C5A-E5AF5D955903</string>
+			<key>PayloadDisplayName</key>
+			<string>Shadowrocket Root CA</string>
+			<key>PayloadDescription</key>
+			<string>Shadowrocket MITM root CA certificate for tvOS.</string>
+			<key>PayloadCertificateFileName</key>
+			<string>Shadowrocket20260910231210.crt</string>
+			<key>PayloadContent</key>
+			<data>
+			MIIDTjCCAvOgAwIBAgIUEjt1llzTFMKGfk75GpSpZFzaug4wCgYI
+			KoZIzj0EAwIwgY8xCzAJBgNVBAYTAlVTMRMwEQYDVQQIDApDYWxp
+			Zm9ybmlhMRIwEAYDVQQHDAlQYWxvIEFsdG8xFTATBgNVBAoMDFNo
+			YWRvd3JvY2tldDEVMBMGA1UECwwMU2hhZG93cm9ja2V0MSkwJwYD
+			VQQDDCBTaGFkb3dyb2NrZXQgMjAyNi0wOS0xMCAyMzoxMjoxMDAe
+			Fw0yNjA5MTEwMzEyMTBaFw0zNjA5MDgwMzEyMTBaMIGPMQswCQYD
+			VQQGEwJVUzETMBEGA1UECAwKQ2FsaWZvcm5pYTESMBAGA1UEBwwJ
+			UGFsbyBBbHRvMRUwEwYDVQQKDAxTaGFkb3dyb2NrZXQxFTATBgNV
+			BAsMDFNoYWRvd3JvY2tldDEpMCcGA1UEAwwgU2hhZG93cm9ja2V0
+			IDIwMjYtMDktMTAgMjM6MTI6MTAwWTATBgcqhkjOPQIBBggqhkjO
+			PQMBBwNCAASF7f0Xp9NbyfsS/dL+5QT1iK2FfBHIUXgVyMNcA8OI
+			bsF293283OjfzFJqwTi0tzPkI73uqTX7YElMEcJHijSxo4IBKTCC
+			ASUwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAYYwHQYD
+			VR0OBBYEFNNqJ3MZtGDsvfvuuMCELZDf66HEMIHPBgNVHSMEgccw
+			gcSAFNNqJ3MZtGDsvfvuuMCELZDf66HEoYGVpIGSMIGPMQswCQYD
+			VQQGEwJVUzETMBEGA1UECAwKQ2FsaWZvcm5pYTESMBAGA1UEBwwJ
+			UGFsbyBBbHRvMRUwEwYDVQQKDAxTaGFkb3dyb2NrZXQxFTATBgNV
+			BAsMDFNoYWRvd3JvY2tldDEpMCcGA1UEAwwgU2hhZG93cm9ja2V0
+			IDIwMjYtMDktMTAgMjM6MTI6MTCCFBI7dZZc0xTChn5O+RqUqWRc
+			2roOMBEGCWCGSAGG+EIBAQQEAwICBDAKBggqhkjOPQQDAgNJADBG
+			AiEAlqHKx0E6XPhtkd30c1LIp1KRmWedtJBnIc0Z/mtGebQCIQDX
+			0V9hutS/WbxW3Ivzq+jauSd1S/soIlsB6Rs3uhGy1A==
+			</data>
+		</dict>
+	</array>
+</dict>
+</plist>
