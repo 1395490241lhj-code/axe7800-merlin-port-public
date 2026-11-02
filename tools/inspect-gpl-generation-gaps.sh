@@ -65,11 +65,12 @@ else
       *.tar.xz|*.txz)   tar tJf "$SRC" ;; *.tar)            tar tf  "$SRC" ;;
       *.zip)            unzip -Z1 "$SRC" ;;
       *) echo "FATAL: unsupported archive type"; exit 2 ;;
-    esac > "$INV" || { echo "FATAL: could not read archive"; rm -f "$INV"; exit 2; }
+    esac > "$INV.tmp" || { echo "FATAL: could not read archive"; rm -f "$INV.tmp"; exit 2; }
+    mv "$INV.tmp" "$INV"   # only a complete listing becomes the cache (Ctrl-C leaves just .tmp)
     say "  inventory: $(wc -l < "$INV") entries (cached at $INV)"
   fi
 fi
-ROOT=$(head -1 "$INV" | cut -d/ -f1)
+if [ "$MODE" = dir ]; then ROOT=$(basename "$SRC"); else ROOT=$(LC_ALL=C sort "$INV" | head -1 | cut -d/ -f1); fi
 say "  root    : ${ROOT:-<none>}"
 say "  layout  : $(grep -qE 'prebuild/RT-AXE7800/' "$INV" && echo 'Merlin per-model' || echo 'raw-ASUS flat (or unknown)')"
 
@@ -108,7 +109,9 @@ defsyms(){ [ -n "$NM" ] && "$NM" --defined-only "$1" 2>/dev/null | awk '$2 ~ /^[
 say ""; say "== 1. shared / libnvram private ABI =="
 IPAIR="invalid_nvram_get_program invalid_program_check"
 for s in $IPAIR; do
-  SRCHIT=$(grep -rl "^[A-Za-z_].*\b$s[[:space:]]*(" "$EX" --include='*.c' 2>/dev/null | head -1)
+  # a definition, not a prototype: lines ending in ';' are excluded (same rule as section 2)
+  SRCHIT=$(grep -r "^[A-Za-z_].*\b${s}[[:space:]]*(" "$EX" --include='*.c' 2>/dev/null \
+    | grep -v ';[[:space:]]*$' | head -1 | cut -d: -f1)
   OBJHIT=""
   for o in $(find "$EX" -path '*shared/prebuild*' -name '*.o' 2>/dev/null); do
     defsyms "$o" | grep -qx "$s" && { OBJHIT="$o"; break; }
