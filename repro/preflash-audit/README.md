@@ -171,3 +171,23 @@ Details: [`COVERAGE.md`](COVERAGE.md), [E14](evidence/session-2026-10-14-verifie
 | walk (c) `rc` init, compiled | 98 functions: 52 compile to the same code as stock; `init_switch`, `config_switch`, `init_wl`, `start_wl`, `sync_boot_state` are among them. The 16 that differ are Merlin features or codegen, each attributed |
 | walk (d) platform layer, compiled | 440 Broadcom-specific functions: 433 compile to the same code as stock; 7 are newer ASUS code paths that take stock's path or only report on this router's settings. The RT-AXE7800 port table is identical, and br0 STP stays off |
 
+
+## L. How each evidence file was made
+
+A file is only as good as its recorded method. "Re-run 2026-11-02" means an independent rebuild of
+both images reproduced the file exactly (or as noted). "Command not recorded" files are kept as
+records, but their numbers cannot be re-derived from this repository.
+
+| file | made by | re-run 2026-11-02 |
+|---|---|---|
+| `abi-closure-merlin-v12e.txt` | [`tools/rootfs-abi-closure.py`](../../tools/rootfs-abi-closure.py) `<rootfs>` | identical |
+| `ldd-r-*.txt` / `*.summary` | [`tools/rootfs-ldd-check.sh`](../../tools/rootfs-ldd-check.sh) (stdout / stderr), in `Dockerfile.verify` | v12e and stock identical |
+| `init-path-compare.txt` | [`init-path-compare.py`](init-path-compare.py) | identical |
+| `init-path-objcmp.txt`, `platform-objcmp.txt` | [`init-path-objcmp.py`](init-path-objcmp.py) with the cross `objdump` | identical (platform: `$a`/`$d` removed) |
+| `image-checks-rebuild-2026-11-02.txt` | [`image-checks.sh`](image-checks.sh), which prints every command | made then |
+| `nvram-defaults-*`, `nvram-default-value-diffs.tsv` | [`tools/nvram-defaults-dump.c`](../../tools/nvram-defaults-dump.c) under qemu-arm; the diff step was not recorded | key counts identical; diff corrected 16 → 18 |
+| `router-commands.txt`, `router-resources.txt` | [`tools/router-ro.sh`](../../tools/router-ro.sh) log / router output | needs the router |
+| `www-js-check-*.json` | ESLint replica of ASUS's JS check, described in `session-2026-10-15-verified-cells.md` §S10; command not recorded | not re-run |
+| `v12e-image-checks.txt` | command not recorded; see the note at its top | superseded |
+| `bootfs-contents.txt`, `fit-integrity.txt`, `depmod-raw.txt`, `smoke-exec.txt`, `symlinks-*.txt`, `init-path-names.txt`, `platform-objcmp-names.txt` | command not recorded | `depmod -e` (0 unresolved) and `nvram show` under qemu re-checked by hand |
+| `session-*.md`, `owner-trigger-check-*.md`, `codex-independent-audit-*.md` | hand-written notes and a third-party review | — |

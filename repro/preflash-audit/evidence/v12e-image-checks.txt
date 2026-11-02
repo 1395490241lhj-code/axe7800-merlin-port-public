@@ -1,3 +1,8 @@
+# NOTE (2026-11-02): the commands behind this file were not recorded, so its bare numbers cannot be re-derived.
+# The last line ('MXIC driver WAR strings: 0') is unexplained: an independent rebuild shows the MXIC write-retry and
+# UBI erase-retry strings in vmlinux, bcm63xx_flash.o and ubi/wl.o, and memset(...,0xff) in all three U-Boot hashtable.o.
+# Superseded by image-checks-rebuild-2026-11-02.txt (made by ../image-checks.sh, which prints every command).
+
 == FIT
 RT-AXE7800
 bootfs_6756_a0+ MATCH
