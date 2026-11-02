@@ -15,11 +15,27 @@ takes the first word of each line.
 import os, re, sys, subprocess, glob, difflib
 from elftools.elf.elffile import ELFFile
 
+def norm(t):
+    """One disassembled instruction -> layout-independent text."""
+    t = re.sub(r'<[^>]*>', '', t)            # symbolic labels
+    t = re.sub(r';.*$', '', t).strip()        # comments with addresses
+    t = re.sub(r'^(b[a-z.]*\s+)[0-9a-f]+$', r'\1ADDR', t)  # branch targets of any length
+    op, _, args = t.partition(' ')            # mask operands only: add/adc/bfc are hex-letter mnemonics
+    t = op + ' ' + re.sub(r'\b[0-9a-f]{3,}\b', 'ADDR', args)  # addresses
+    t = re.sub(r'\[pc, #-?\d+\]', '[pc,#OFF]', t)
+    return ' '.join(t.split())
+
+assert norm('add r0, r1, r2') != norm('adc r0, r1, r2')
+assert norm('bfc r0, #0, #4') == 'bfc r0, #0, #4'
+assert norm('bl 1a4 <foo>') == 'bl ADDR'
+assert norm('ldr r3, [pc, #12] ; 1b0 <x+0x4>') == 'ldr r3, [pc,#OFF]'
+
 OD, S, M, names_file = sys.argv[1:5]
-names = [l.split()[0] for l in open(names_file) if l.strip()]
+# '$a'/'$d' are ARM mapping symbols, not functions
+names = [l.split()[0] for l in open(names_file) if l.strip() and not l.startswith('$')]
 
 def objects(root):
-    objs = [o for d in ('rc', 'shared') for o in glob.glob(os.path.join(root, d, '*.o'))]
+    objs = [o for d in ('rc', 'shared') for o in sorted(glob.glob(os.path.join(root, d, '*.o')))]
     where = {}
     for o in objs:
         out = subprocess.run(['nm', '--defined-only', o], capture_output=True, text=True).stdout
@@ -76,13 +92,7 @@ def disasm(obj, fn):
         if l.startswith('Disassembly of section') or not l.strip(): continue
         m = re.match(r'\s+[0-9a-f]+:\s+(.*)', l)
         if m:
-            t = m.group(1)
-            t = re.sub(r'<[^>]*>', '', t)            # symbolic labels
-            t = re.sub(r';.*$', '', t).strip()        # comments with addresses
-            t = re.sub(r'^(b[a-z.]*\s+)[0-9a-f]+$', r'\1ADDR', t)  # branch targets of any length
-            t = re.sub(r'\b[0-9a-f]{3,}\b', 'ADDR', t)  # addresses
-            t = re.sub(r'\[pc, #-?\d+\]', '[pc,#OFF]', t)
-            ins.append(' '.join(t.split()))
+            ins.append(norm(m.group(1)))
     # a literal-pool word followed by a relocation holds a PC-relative addend: layout, not code
     return ['.word REL' if x.startswith('.word') and i + 1 < len(ins) and ins[i + 1].startswith('RELOC')
             else x for i, x in enumerate(ins)]
@@ -95,6 +105,8 @@ for n in names:
     if not a or not b:
         print(f'{n:40} ONLY-IN-{"MERLIN" if b else "STOCK"} ({os.path.relpath(b or a, M if b else S)})'); continue
     da, db = disasm(a, n), disasm(b, n)
+    if not da or not db:                      # nothing disassembled (wrong objdump?): never "same"
+        print(f'{n:40} NO-CODE ({len(da)}/{len(db)} insns)'); continue
     if da == db:
         print(f'{n:40} SAME-CODE ({len(da)} insns)')
     else:

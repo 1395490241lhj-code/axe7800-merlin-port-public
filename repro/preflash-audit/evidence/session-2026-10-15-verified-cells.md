@@ -153,7 +153,7 @@ Walk (c) found a model-relevant difference in a helper outside the init path (`s
 `ext_switch_exist()`). So every function defined in the platform objects was compared as compiled:
 `shared/broadcom.o` (from `shared/sysdeps/broadcom/broadcom.c`), `shared/bcm_stamon.o`, and
 `rc/{broadcom,init-broadcom,ate-broadcom,wps-broadcom,agg_brcm,tcode_brcm,obd-broadcom,roamast-broadcom,conn_diag-broadcom,amas-ssd-broadcom,amas-ssd-cd-broadcom}.o`.
-Results: [`platform-objcmp.txt`](platform-objcmp.txt). **442 functions: 435 SAME-CODE, 7
+Results: [`platform-objcmp.txt`](platform-objcmp.txt). **440 functions: 433 SAME-CODE, 7
 DIFFERENT-CODE**, all attributed:
 
 | function | cause | effect on this router |

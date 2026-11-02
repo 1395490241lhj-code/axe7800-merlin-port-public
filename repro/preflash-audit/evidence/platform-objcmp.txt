@@ -1,8 +1,6 @@
 # compiled-code compare (init-path-objcmp.py) of every function defined in the platform objects:
 # shared/broadcom.o shared/bcm_stamon.o rc/{broadcom,init-broadcom,ate-broadcom,wps-broadcom,agg_brcm,tcode_brcm,obd-broadcom,roamast-broadcom,conn_diag-broadcom,amas-ssd-broadcom,amas-ssd-cd-broadcom}.o
-# stock GPL 25206 build vs Merlin v12 build; 442 functions
-$a                                       SAME-CODE (0 insns)
-$d                                       SAME-CODE (0 insns)
+# stock GPL 25206 build vs Merlin v12 build; 440 functions (ARM mapping symbols $a/$d excluded, re-run 2026-11-02)
 add_beacon_vsie                          SAME-CODE (125 insns)
 add_beacon_vsie_by_unit                  SAME-CODE (37 insns)
 add_beacon_vsie_guest                    SAME-CODE (137 insns)

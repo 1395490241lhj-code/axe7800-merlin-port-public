@@ -169,5 +169,5 @@ Details: [`COVERAGE.md`](COVERAGE.md), [E14](evidence/session-2026-10-14-verifie
 | walk (a) boot log | all 1,201 `dmesg` lines map to existing cells |
 | walk (b) file tree | same skeleton; `/opt` is Entware's symlink; `/ftpclient` is Merlin's cloud-sync client |
 | walk (c) `rc` init, compiled | 98 functions: 52 compile to the same code as stock; `init_switch`, `config_switch`, `init_wl`, `start_wl`, `sync_boot_state` are among them. The 16 that differ are Merlin features or codegen, each attributed |
-| walk (d) platform layer, compiled | 442 Broadcom-specific functions: 435 compile to the same code as stock; 7 are newer ASUS code paths that take stock's path or only report on this router's settings. The RT-AXE7800 port table is identical, and br0 STP stays off |
+| walk (d) platform layer, compiled | 440 Broadcom-specific functions: 433 compile to the same code as stock; 7 are newer ASUS code paths that take stock's path or only report on this router's settings. The RT-AXE7800 port table is identical, and br0 STP stays off |
 
