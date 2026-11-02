@@ -24,6 +24,10 @@ G="$(cd "${1:?gpl-root}" && pwd)/release"
 M="$(cd "${2:?merlin-worktree}" && pwd)/release"
 [ -d "$G/src-rt-5.04axhnd.675x" ] || { echo "FATAL: not a GPL root: $1" >&2; exit 2; }
 [ -d "$M/src-rt-5.04axhnd.675x" ] || { echo "FATAL: not a Merlin worktree: $2" >&2; exit 2; }
+# DRV/HOST/MODEL rows depend on what Merlin lacks: on a replayed or built tree they silently vanish.
+PIN=$(sed -n 's/^MERLIN_PIN=//p' "$(dirname "$0")/replay.sh")
+[ "$(git -C "$2" rev-parse HEAD)" = "$PIN" ] || { echo "FATAL: Merlin worktree not at pin $PIN" >&2; exit 2; }
+[ -z "$(git -C "$2" status --porcelain)" ] || { echo "FATAL: Merlin worktree not pristine (already replayed?)" >&2; exit 2; }
 H=src-rt-5.04axhnd.675x
 R=src/router
 

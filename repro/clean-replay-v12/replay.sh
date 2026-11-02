@@ -26,6 +26,7 @@ echo "== A: preflight =="
 grep -q '^EXTENDNO=25206-gcaa73b5$' "$GPL/release/src/router/extendno.conf" \
   || { echo "FATAL: GPL tree is not 388.25206-gcaa73b5"; exit 1; }
 [ -f "$MANIFEST" ] || { echo "FATAL: committed supply manifest missing"; exit 1; }
+grep -qx "# merlin pin $MERLIN_PIN" "$MANIFEST" || { echo "FATAL: manifest was not generated at Merlin pin $MERLIN_PIN"; exit 1; }
 log "pin OK, pristine OK, GPL 25206-gcaa73b5 OK, manifest OK"
 
 echo "== B: model integration =="
