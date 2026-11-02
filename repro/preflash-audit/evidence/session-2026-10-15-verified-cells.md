@@ -27,7 +27,7 @@ earlier byte counts came only from the version-string length shifting the layout
 
 The default tables were dumped with [`tools/nvram-defaults-dump.c`](../../../tools/nvram-defaults-dump.c),
 compiled against each tree's `defaults.c` and run under qemu-arm. Of the **1,369 keys present in both
-tables**, **16 have different values**:
+tables**, **18 have different values**:
 [`nvram-default-value-diffs.tsv`](nvram-default-value-diffs.tsv). Three of them are referenced by
 25206 prebuilt objects:
 
@@ -38,8 +38,15 @@ tables**, **16 have different values**:
 | `wgc_alive` | `0` | `25` | WireGuard client keepalive, used only when a WireGuard client is enabled |
 
 Defaults apply only to keys missing from NVRAM, which means a factory reset or a key that has never
-been set. A web-UI upgrade keeps the router's existing NVRAM. None of the 16 affects boot,
+been set. A web-UI upgrade keeps the router's existing NVRAM. None of the 18 affects boot,
 interfaces or storage.
+
+*Corrected 2026-11-02 (16 → 18).* Merlin's `defaults.c` lists five keys twice. Two of them disagree:
+`vpn_client_digest` and `vpn_server_digest` are both `SHA1` and `default`. The first count kept the first
+copy. But on a factory reset `rc/init.c` runs `nvram_set` for every entry in order, so the last copy
+wins and both keys become `default` (stock: `SHA1`). This duplicate comes from upstream Merlin. Effect:
+`default` makes `libovpn/openvpn_setup.c` leave out the `auth` line, so OpenVPN uses its own default
+digest. Neither key is referenced by a 25206 prebuilt.
 
 ## S10 — web UI (item 11)
 

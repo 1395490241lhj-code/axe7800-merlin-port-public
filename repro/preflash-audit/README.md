@@ -163,7 +163,7 @@ Details: [`COVERAGE.md`](COVERAGE.md), [E14](evidence/session-2026-10-14-verifie
 | retail kernel | the decompressed `Image` is the stock build's size; 8 string lines differ (banner, initramfs mtimes). Command line comes from the identical DTB |
 | NVRAM encryption / login | in the unchanged 25206 `spwenc.o`; `http_passwd` read identically |
 | first-boot migration | the same conversions as stock, plus Merlin's versioned `adjust_merlin_config`; no erase or format |
-| NVRAM default values | 16 of 1,369 shared keys differ, 3 used by prebuilts (`ntp_server1`, `sshd_port`, `wgc_alive`); relevant only after a factory reset |
+| NVRAM default values | 18 of 1,369 shared keys differ, 3 used by prebuilts (`ntp_server1`, `sshd_port`, `wgc_alive`); relevant only after a factory reset |
 | web UI | ASUS's ESLint check, run offline: no parse errors; one new note, in minified `Chart.js` |
 | resources | router uses 182 of 508 MB; Merlin's extra daemons are off by default |
 | walk (a) boot log | all 1,201 `dmesg` lines map to existing cells |

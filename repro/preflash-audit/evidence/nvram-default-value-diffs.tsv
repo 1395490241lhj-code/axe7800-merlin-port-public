@@ -12,6 +12,8 @@ sshd_port		22	REF
 upnp_ssdp_interval	60	900	-
 usb_idle_timeout	60	300	-
 vpn_client_adns	0	1	-
+vpn_client_digest	SHA1	default	-
+vpn_server_digest	SHA1	default	-
 vpn_server_sn6		fd00:ac68:1::/64	-
 vpn_server_tls_keysize	0	1	-
 wgc_alive	0	25	REF
