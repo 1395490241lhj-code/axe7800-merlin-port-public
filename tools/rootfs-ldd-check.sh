@@ -8,11 +8,13 @@
 # library, perform ALL relocations (functions and data, including symbol VERSION checks) and print
 # a line for each failure, without running the program. This is what the router's loader does.
 # Output (tab-separated): NOTFOUND <elf> <lib> | UNDEF <elf> <symbol> | VERSION <elf> <message>
+# Exit 0 when nothing is printed, 1 otherwise (stock 25206 itself has one lld2d finding: compare, don't gate).
 set -uo pipefail
 FS="$(cd "${1:?rootfs}" && pwd)"
 LD=$(cd "$FS" && ls lib/ld-linux*.so* 2>/dev/null | head -1)
 [ -n "$LD" ] || { echo "FATAL: no lib/ld-linux*.so* in $FS" >&2; exit 2; }
-n=0; bad=0
+res=$(
+n=0
 while IFS= read -r -d '' f; do
   rel="/${f#$FS/}"
   head -c4 "$f" | grep -q $'\x7fELF' || continue
@@ -32,3 +34,6 @@ while IFS= read -r -d '' f; do
   fi
 done < <(find "$FS" -type f -print0 | LC_ALL=C sort -z)
 echo "# dynamic programs checked: $n" >&2
+)
+[ -z "$res" ] || printf '%s\n' "$res"
+[ -z "$res" ]   # exit 1 when any NOTFOUND/UNDEF/VERSION/LOADFAIL line was printed

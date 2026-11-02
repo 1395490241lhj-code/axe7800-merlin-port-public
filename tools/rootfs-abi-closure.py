@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Runtime ABI closure of a firmware root filesystem (read-only).
 
-usage: rootfs-abi-closure.py <rootfs-dir> [--readelf <readelf>]
+usage: rootfs-abi-closure.py <rootfs-dir> [--readelf <readelf>] [--baseline <earlier-output>]
 
 Models the dynamic loader: for every dynamically linked EXECUTABLE (ET_EXEC/PIE with an
 interpreter), load its transitive DT_NEEDED closure (standard lib dirs plus in-rootfs
@@ -11,8 +11,9 @@ somewhere in the closure (global scope). Shared libraries are therefore judged i
 of the programs that load them, since under-linked .so files are normal. dlopen()ed plugins
 are outside this model.
 
-Exit 0 when nothing is unresolved, 1 otherwise. Output: one line per unresolved symbol and a
-summary. Missing sonames are reported separately.
+Exit 0 when nothing is unresolved, 1 otherwise. With --baseline (e.g. the stock image's output,
+which already has vendor gaps), exit 1 only for lines that are not in the baseline. Output: one
+line per unresolved symbol and a summary. Missing sonames are reported separately.
 """
 import os, re, subprocess, sys, collections
 
@@ -103,12 +104,16 @@ for p, (needed, rp, und, dfn) in info.items():
         for s in info[c][2] - provided:
             unresolved[os.path.relpath(c, root)].add(s)
 
-for so, users in sorted(missing_so.items()):
-    print(f'MISSING-SONAME\t{so}\t{",".join(sorted(users)[:5])}')
-for f, ss in sorted(unresolved.items()):
-    for s in sorted(ss):
-        print(f'UNRESOLVED\t{f}\t{s}')
+lines = [f'MISSING-SONAME\t{so}\t{",".join(sorted(users)[:5])}' for so, users in sorted(missing_so.items())]
+lines += [f'UNRESOLVED\t{f}\t{s}' for f, ss in sorted(unresolved.items()) for s in sorted(ss)]
+if lines:
+    print('\n'.join(lines))
 n = sum(len(v) for v in unresolved.values())
 print(f'# dynamic ELFs: {len(info)}; unresolved symbols: {n} in {len(unresolved)} files; '
       f'missing sonames: {len(missing_so)}', file=sys.stderr)
-sys.exit(1 if n or missing_so else 0)
+if '--baseline' in sys.argv:
+    base = {l.rstrip('\n') for l in open(sys.argv[sys.argv.index('--baseline') + 1]) if not l.startswith('#')}
+    new = [l for l in lines if l not in base]
+    print(f'# not in baseline: {len(new)}', file=sys.stderr)
+    sys.exit(1 if new else 0)
+sys.exit(1 if lines else 0)
