@@ -7,6 +7,8 @@ The ASUS package, built as shipped (no source changes) for `rt-axe7800`, in the 
     docker run --rm -v <stock>:/work -v <toolchains>:/opt/toolchains axe7800-build-stock \
         bash -c 'cd /work/asuswrt/release/src-rt-5.04axhnd.675x && make rt-axe7800'
 
+Run it with native Docker or Podman (`podman run --userns=keep-id ...`). Docker Desktop's file sharing refuses `chmod` on read-only files, and the build stops at e2fsprogs' `compile_et` (`Permission denied`).
+
 ## Result: complete image, and byte-identical to retail where it can be checked
 
 `exit=0`, final pass 22m40s. Outputs in `src-rt-5.04axhnd.675x/targets/96756GW/`:

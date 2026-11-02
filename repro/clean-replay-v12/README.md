@@ -11,6 +11,8 @@ chosen by measurement in [`../baseline-analysis/BASELINE-DECISION.md`](../baseli
     # then, in the build container (tools/build-env):
     cd release/src-rt-5.04axhnd.675x && make rt-axe7800
 
+Run it with native Docker or Podman (`podman run --userns=keep-id ...`). Docker Desktop's file sharing refuses `chmod` on read-only files, and the build stops at e2fsprogs' `compile_et` (`Permission denied`).
+
 ## What changed from v11
 
 | | v11 | v12 |

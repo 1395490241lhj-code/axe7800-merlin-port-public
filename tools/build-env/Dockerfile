@@ -1,7 +1,10 @@
 # Build environment for ASUS HND (BCM6756 / src-rt-5.04axhnd.675x) GPL and Asuswrt-Merlin trees.
 # The ARM toolchain is NOT baked in: bind-mount the GPL package's own
-#   release/src-rt-5.04axhnd.675x/toolchains  ->  /opt/toolchains   (read-only)
-# so the compiler used is exactly the one ASUS shipped with the package.
+#   release/src-rt-5.04axhnd.675x/toolchains  ->  /opt/toolchains   (writable: the Makefile adds symlinks)
+# so the compiler used is the one ASUS shipped. The package lacks cc1/cc1plus/lto1/libgcc.a; RMerlin's
+# am-toolchains copy is byte-identical on every shared file and adds them (repro/stock-build-25206).
+# Run with native Docker or `podman run --userns=keep-id`: Docker Desktop's file sharing refuses chmod on
+# read-only files and the build stops at e2fsprogs' compile_et ("Permission denied").
 FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive LANG=C.UTF-8
 # cc1/cc1plus/lto1 load libisl/libmpc/libmpfr/libgmp from the toolchain's own lib dir
