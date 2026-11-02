@@ -9,6 +9,8 @@ integration state → ONE build establishes the natural blocker.
 
     ./replay.sh <fresh-worktree> [supply-cache]
 
+`replay.sh`: removed 2026-11-02 (superseded by `clean-replay-v12`; it could not run reliably from this repo); last version at git tag `historical-replays`. It read `repro/source-adaptation-v1/supply-manifest.txt`, which was never published here.
+
 ## What it reproduces (everything previous lineages did by hand)
 
 | step | content | source of truth |

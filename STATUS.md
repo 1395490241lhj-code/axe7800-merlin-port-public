@@ -21,7 +21,7 @@ Frozen at the **clean-replay-v2** milestone. Reproducibility baseline: RMerlin
 `3006.102-wifi6` @ `ccd139a31d94de15d2da744083dbafbcfe97dcdf`.
 
 ## Validated
-Reproduced from a pristine checkout by `repro/clean-replay-v2/replay.sh`, then one
+Reproduced from a pristine checkout by `repro/clean-replay-v2/replay.sh` (removed since; git tag `historical-replays`), then one
 from-scratch build:
 
 - host tools stage passes
