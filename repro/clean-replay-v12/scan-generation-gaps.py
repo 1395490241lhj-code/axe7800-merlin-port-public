@@ -17,7 +17,7 @@ R = os.path.join(wt, 'release/src/router')
 GR = os.path.join(gpl, 'release/src/router')
 
 def defined(path):
-    p = subprocess.run(['nm', '--defined-only', '-g', path], capture_output=True, text=True)
+    p = subprocess.run(['nm', '--defined-only', '-g', path], capture_output=True, text=True, check=True)
     return {l.split()[-1] for l in p.stdout.splitlines() if len(l.split()) == 3}
 
 def prebuild_dirs(root):

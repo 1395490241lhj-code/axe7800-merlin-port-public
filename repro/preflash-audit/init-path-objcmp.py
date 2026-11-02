@@ -38,7 +38,7 @@ def objects(root):
     objs = [o for d in ('rc', 'shared') for o in sorted(glob.glob(os.path.join(root, d, '*.o')))]
     where = {}
     for o in objs:
-        out = subprocess.run(['nm', '--defined-only', o], capture_output=True, text=True).stdout
+        out = subprocess.run(['nm', '--defined-only', o], capture_output=True, text=True, check=True).stdout
         for l in out.splitlines():
             p = l.split()
             if len(p) == 3 and p[1] in 'Tt':
@@ -73,7 +73,7 @@ def local_strings(obj):
 
 def disasm(obj, fn):
     out = subprocess.run([OD, '-dr', '--no-show-raw-insn', f'--disassemble={fn}', obj],
-                         capture_output=True, text=True).stdout
+                         capture_output=True, text=True, check=True).stdout
     ins = []
     # binutils 2.32 prints relocations of the whole section with --disassemble=<fn>; keep only
     # those whose offset lies inside the function's own instruction range.

@@ -57,7 +57,7 @@ def match_brace(src, i):
 def defs(root):
     out = {}
     for d in DIRS:
-        for f in glob.glob(os.path.join(root, d, '*.c')):
+        for f in sorted(glob.glob(os.path.join(root, d, '*.c'))):
             src = strip_comments(open(f, errors='replace').read())
             for m in re.finditer(r'^[A-Za-z_][\w \t\*]*?\b(\w+)\s*\([^;{)]*\)\s*\{', src, re.M):
                 name = m.group(1)
@@ -78,8 +78,8 @@ def calls(root, fn_regex):
     return seen
 
 prebuilt = set()
-for o in glob.glob(os.path.join(PB, '*/prebuild/*.o')):
-    for l in subprocess.run(['nm', '--defined-only', o], capture_output=True, text=True).stdout.splitlines():
+for o in sorted(glob.glob(os.path.join(PB, '*/prebuild/*.o'))):
+    for l in subprocess.run(['nm', '--defined-only', o], capture_output=True, text=True, check=True).stdout.splitlines():
         p = l.split()
         if len(p) == 3 and p[1] == 'T':
             prebuilt.add(p[2])

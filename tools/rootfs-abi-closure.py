@@ -30,13 +30,13 @@ def is_elf(p):
         return False
 
 def dyn(p):
-    out = subprocess.run([readelf, '-d', '-W', p], capture_output=True, text=True).stdout
+    out = subprocess.run([readelf, '-d', '-W', p], capture_output=True, text=True, check=True).stdout
     needed = re.findall(r'\(NEEDED\)\s+Shared library: \[([^\]]+)\]', out)
     rpaths = re.findall(r'\((?:RUNPATH|RPATH)\)\s+Library (?:runpath|rpath): \[([^\]]+)\]', out)
     return needed, [d for r in rpaths for d in r.split(':')], ('Dynamic section at offset' in out)
 
 def syms(p):
-    out = subprocess.run([readelf, '--dyn-syms', '-W', p], capture_output=True, text=True).stdout
+    out = subprocess.run([readelf, '--dyn-syms', '-W', p], capture_output=True, text=True, check=True).stdout
     und, dfn = set(), set()
     for l in out.splitlines():
         f = l.split()
@@ -75,7 +75,7 @@ def resolve(soname, rpaths):
     return None
 
 def interp(p):
-    out = subprocess.run([readelf, '-l', '-W', p], capture_output=True, text=True).stdout
+    out = subprocess.run([readelf, '-l', '-W', p], capture_output=True, text=True, check=True).stdout
     m = re.search(r'Requesting program interpreter: ([^\]]+)\]', out)
     return m.group(1) if m else None
 

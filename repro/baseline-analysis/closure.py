@@ -60,7 +60,7 @@ def defs_git(ref):
     return names_from_lines(p.stdout.splitlines())
 
 def nm(args, path):
-    p = subprocess.run(['nm'] + args + [path], capture_output=True, text=True, errors='replace')
+    p = subprocess.run(['nm'] + args + [path], capture_output=True, text=True, errors='replace', check=True)
     return p.stdout.splitlines()
 
 def is_elf(path):
@@ -82,7 +82,7 @@ for comp in sorted(os.listdir(ROUTER)):
             if os.path.islink(path) or not is_elf(path):
                 continue
             rel = os.path.relpath(path, ROUTER)
-            ftype = subprocess.run(['file', '-b', path], capture_output=True, text=True).stdout
+            ftype = subprocess.run(['file', '-b', path], capture_output=True, text=True, check=True).stdout
             if 'ARM' not in ftype or '32-bit' not in ftype:
                 continue
             if 'relocatable' in ftype:
