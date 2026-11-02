@@ -2,13 +2,13 @@
 
 Text artifacts describing the validated replay. **No binaries, no build logs, no firmware.**
 
-`replay.sh` reconstructs the port from a pristine checkout of the pinned upstream commit using
+`replay.sh` (now removed, see the table below) reconstructed the port from a pristine checkout of the pinned upstream commit using
 only pinned refs, verifying every imported item by SHA256 and asserting the resulting target
 values. It does **not** build; `make rt-axe7800` is run separately.
 
 | file | contents |
 |---|---|
-| `replay.sh` | deterministic replay script |
+| `replay.sh` | deterministic replay script, removed 2026-11-02 (superseded by `clean-replay-v12`; it could not run reliably from this repo); last version at git tag `historical-replays` |
 | `patches/0001-add-RT-AXE7800-target.patch` | adds the RT-AXE7800 target definition |
 | `patches/0002-phy-chip-scoped-prebuilt-selection.patch` | chip-scoped phy prebuilt selection so ARM32 (6756) and AArch64 (4912) can share one tree |
 | `binary-provenance-manifest.txt` | sha256/size/type/source/rationale for each imported item |

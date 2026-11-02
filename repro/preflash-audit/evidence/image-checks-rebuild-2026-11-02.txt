@@ -1,0 +1,44 @@
+# repro/preflash-audit/image-checks.sh on an independent rebuild, 2026-11-02:
+#   replay.sh (v12, patches 0001-0008) on a fresh worktree at the pin, then one 'make rt-axe7800' (podman, 26 min, 0 make errors).
+#   image RT-AXE7800_3004_388.13_alpha1_nand_squashfs.pkgtb, 56,717,244 B, sha256 f135799a79dd71bd45b981f1fa4a77dea18d0482ab81bc5c5542942c9622ac51
+#   $OD = crosstools-arm-gcc-9.2-linux-4.19-glibc-2.30-binutils-2.32/usr/bin/arm-buildroot-linux-gnueabi-objdump
+
+== MXIC NAND fixes (patches 0007/0008): unique strings and code they add
+$ strings -a kernel/linux-4.19/vmlinux | grep -c 'Error writing page. retry count'
+1
+
+$ strings -a kernel/linux-4.19/vmlinux | grep -c 'WAR: failed to erase PEB'
+1
+
+$ strings -a bcmdrivers/opensource/char/board/bcm963xx/impl1/bcm63xx_flash.o | grep -c 'Error writing page. retry count'
+1
+
+$ strings -a bcmdrivers/opensource/char/board/bcm963xx/impl1/bcm63xx_flash.o | grep -c 'WAR: failed to erase PEB'
+0
+
+$ strings -a kernel/linux-4.19/drivers/mtd/ubi/wl.o | grep -c 'Error writing page. retry count'
+0
+
+$ strings -a kernel/linux-4.19/drivers/mtd/ubi/wl.o | grep -c 'WAR: failed to erase PEB'
+1
+
+$ '$OD' -d --disassemble=hexport_r bootloaders/obj/uboot/lib/hashtable.o | grep -c 'mov[[:space:]]*r1, #255'
+1
+
+$ '$OD' -d --disassemble=hexport_r bootloaders/obj/nand_spl/lib/hashtable.o | grep -c 'mov[[:space:]]*r1, #255'
+1
+
+$ '$OD' -d --disassemble=hexport_r bootloaders/obj/emmc_spl/lib/hashtable.o | grep -c 'mov[[:space:]]*r1, #255'
+1
+
+== kernel modules
+$ find targets/96756GW/fs -name '*.ko' | wc -l
+153
+
+$ find targets/96756GW/fs/lib/modules -name '*.ko' | wc -l
+150
+
+== radio firmware (DNGL: GPL 25206 copy expected, d5b3b559...)
+$ sha256sum targets/96756GW/fs/rom/etc/wlan/dhd/6715b0/rtecdc.bin | cut -d' ' -f1
+d5b3b559fc1b20be2da3b91b67a0e47e302145fe3587e0e418ac355e1e6d045f
+

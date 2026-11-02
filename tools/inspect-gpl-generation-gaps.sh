@@ -65,11 +65,12 @@ else
       *.tar.xz|*.txz)   tar tJf "$SRC" ;; *.tar)            tar tf  "$SRC" ;;
       *.zip)            unzip -Z1 "$SRC" ;;
       *) echo "FATAL: unsupported archive type"; exit 2 ;;
-    esac > "$INV" || { echo "FATAL: could not read archive"; rm -f "$INV"; exit 2; }
+    esac > "$INV.tmp" || { echo "FATAL: could not read archive"; rm -f "$INV.tmp"; exit 2; }
+    mv "$INV.tmp" "$INV"   # only a complete listing becomes the cache (Ctrl-C leaves just .tmp)
     say "  inventory: $(wc -l < "$INV") entries (cached at $INV)"
   fi
 fi
-ROOT=$(head -1 "$INV" | cut -d/ -f1)
+if [ "$MODE" = dir ]; then ROOT=$(basename "$SRC"); else ROOT=$(LC_ALL=C sort "$INV" | head -1 | cut -d/ -f1); fi
 say "  root    : ${ROOT:-<none>}"
 say "  layout  : $(grep -qE 'prebuild/RT-AXE7800/' "$INV" && echo 'Merlin per-model' || echo 'raw-ASUS flat (or unknown)')"
 
@@ -108,7 +109,9 @@ defsyms(){ [ -n "$NM" ] && "$NM" --defined-only "$1" 2>/dev/null | awk '$2 ~ /^[
 say ""; say "== 1. shared / libnvram private ABI =="
 IPAIR="invalid_nvram_get_program invalid_program_check"
 for s in $IPAIR; do
-  SRCHIT=$(grep -rl "^[A-Za-z_].*\b$s[[:space:]]*(" "$EX" --include='*.c' 2>/dev/null | head -1)
+  # a definition, not a prototype: lines ending in ';' are excluded (same rule as section 2)
+  SRCHIT=$(grep -r "^[A-Za-z_].*\b${s}[[:space:]]*(" "$EX" --include='*.c' 2>/dev/null \
+    | grep -v ';[[:space:]]*$' | head -1 | cut -d: -f1)
   OBJHIT=""
   for o in $(find "$EX" -path '*shared/prebuild*' -name '*.o' 2>/dev/null); do
     defsyms "$o" | grep -qx "$s" && { OBJHIT="$o"; break; }
@@ -132,7 +135,10 @@ if [ -s "$CONTRACT" ]; then
   N=$(wc -l < "$WORK/contract.txt")
   : > "$WORK/have.txt"
   [ -n "$P_O" ] && defsyms "$P_O" >> "$WORK/have.txt"
-  for c in $W_C $P_C; do [ -n "$c" ] && grep -oE '^[A-Za-z_][A-Za-z0-9_]*[[:space:]]*\(' "$c" 2>/dev/null | tr -d ' (' >> "$WORK/have.txt"; done
+  # Column-0 function definitions, with or without the return type on the same line
+  # ("b64_decode(" and "int set_app_mnt(char *x)"); prototypes ending in ';' are excluded.
+  for c in $W_C $P_C; do [ -n "$c" ] && grep -E '^[A-Za-z_][A-Za-z0-9_[:space:]*]*\(' "$c" 2>/dev/null \
+    | grep -vE ';[[:space:]]*$' | sed -E 's/[[:space:]]*\(.*//; s/.*[^A-Za-z0-9_]//' >> "$WORK/have.txt"; done
   grep -v '^#' "$CONTRACT" | awk '$2=="OPEN"{print $1}' >> "$WORK/have.txt"
   sort -u "$WORK/have.txt" -o "$WORK/have.txt"
   MISS=$(comm -23 "$WORK/contract.txt" "$WORK/have.txt")

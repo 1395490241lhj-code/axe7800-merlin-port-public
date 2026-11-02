@@ -24,13 +24,18 @@ SRC="${1:-}"
 WANT_ARCH_RE='ELF 32-bit.*ARM'
 # Known-stock RT-AXE7800 6715b0 dongle firmware (from verified 3.0.0.4.388_25206).
 # Informational only - never affects the exit code.
+# Merlin layout keeps it per model; the raw ASUS package ships it under sysdeps/default.
 RUNTIME_FW_PATH_RE='(^|/)dongle/sysdeps/RT-AXE7800/6715b0/rtecdc\.bin$'
-RUNTIME_FW_STOCK_SHA256='d4c760d14b4d953df716f6787af5f9b94d311c75143bc2a3521af29a9a7eca81' 
+RUNTIME_FW_RAW_RE='(^|/)dongle/sysdeps/default/6715b0/rtecdc\.bin$'
+RUNTIME_FW_STOCK_SHA256='d4c760d14b4d953df716f6787af5f9b94d311c75143bc2a3521af29a9a7eca81'
+# The GPL 25206 copy differs from retail only by a 14-byte build stamp.
+RUNTIME_FW_GPL_SHA256='d5b3b559fc1b20be2da3b91b67a0e47e302145fe3587e0e418ac355e1e6d045f'
 
 # Objects the CURRENT verified RT-AXE7800 configuration actually requires.
-CURRENT_REQUIRED_P0="api-broadcom.o tcode.o amas_utils.o private.o"
+# spwenc.o defines invalid_nvram_get_program/invalid_program_check (clean-replay-v12 asserts it).
+CURRENT_REQUIRED_P0="api-broadcom.o tcode.o amas_utils.o private.o spwenc.o"
 # Shipped for both BCM6756 models but NOT reached by the current config (feature-gated).
-FEATURE_GATED_EXPECTED="uu_utils.o notify_ahs.o amas_wgn_shared.o spwenc.o"
+FEATURE_GATED_EXPECTED="uu_utils.o notify_ahs.o amas_wgn_shared.o"
 # Present only in the BCM4912 (GT-AX6000) donor; absent from BOTH BCM6756 17-object sets.
 # Informational only - never affects the exit code.
 NON_6756_OPTIONAL="amas_apg_shared.o"
@@ -90,14 +95,20 @@ TOTAL=$(wc -l < "$INDEX")
 echo "package kind: $KIND ; entries indexed: $TOTAL"
 echo
 
+# Archives: extract every member this script may read in ONE pass (one decompression, not one per file).
+if [ "$KIND" != dir ]; then
+  TMP=$(mktemp -d) || { echo "FATAL: mktemp failed"; exit 3; }
+  grep -E '(^|/)release/src/router/shared/prebuild/|(^|/)release/src/router/rc/prebuild/init-broadcom\.o$|(^|/)dongle/sysdeps/(RT-AXE7800|default)/6715b0/rtecdc\.bin$' \
+    "$INDEX" > "$TMP/.members" || true
+  case "$KIND" in
+    tar) tar -xf "$SRC" -C "$TMP" -T "$TMP/.members" 2>/dev/null || true ;;
+    zip) xargs -a "$TMP/.members" -d '\n' unzip -o -q -d "$TMP" "$SRC" 2>/dev/null || true ;;
+  esac
+fi
+
 extract_one(){ # $1 = member path -> prints local readable path (or nothing)
   local p="$1"
   if [ "$KIND" = dir ]; then printf '%s\n' "$SRC/$p"; return 0; fi
-  [ -n "$TMP" ] || TMP=$(mktemp -d) || return 0
-  case "$KIND" in
-    tar) tar -xf "$SRC" -C "$TMP" -- "$p" 2>/dev/null || return 0 ;;
-    zip) unzip -o -q -d "$TMP" "$SRC" "$p" 2>/dev/null || return 0 ;;
-  esac
   [ -f "$TMP/$p" ] && printf '%s\n' "$TMP/$p"
   return 0
 }
@@ -163,11 +174,41 @@ find_src_alt(){ # $1 = object
   return 0
 }
 
+# Raw-ASUS flat layout (<component>/prebuild/<obj>, no per-model directory) is accepted only
+# when the package's own model-conditional rc object proves which model it was built for:
+# every model-name string compiled into rc/prebuild/init-broadcom.o must be RT-AXE7800.
+# A path or filename alone never establishes this.
+RAW_FLAT_OK=no; RAW_FLAT_WHY="no Merlin per-model layout and no flat identity marker"
+if ! grep -qE 'shared/prebuild/RT-AXE7800/' "$INDEX"; then
+  ib=$(grep -E '(^|/)release/src/router/rc/prebuild/init-broadcom\.o$' "$INDEX" | head -1 || true)
+  if [ -n "$ib" ]; then
+    ibp=$(extract_one "$ib")
+    if [ -n "$ibp" ] && [ -f "$ibp" ]; then
+      models=$(strings -a "$ibp" | grep -oE '\b(RT|GT|TUF|XT|ET|RP|BR|BM|XD|EBA)-[A-Z0-9_]+\b' | grep -E 'AX|AC|BE' | LC_ALL=C sort -u | tr '\n' ' ' || true)
+      if [ "$models" = "RT-AXE7800 " ]; then
+        RAW_FLAT_OK=yes; RAW_FLAT_WHY="rc/prebuild/init-broadcom.o model strings = RT-AXE7800 only"
+      else
+        RAW_FLAT_WHY="rc/prebuild/init-broadcom.o model strings: ${models:-none}"
+      fi
+    fi
+  fi
+fi
+echo "raw-ASUS flat layout accepted: $RAW_FLAT_OK ($RAW_FLAT_WHY)"
+shared_obj_re(){ # $1 = object -> regex for an accepted shared prebuild location
+  if [ "$RAW_FLAT_OK" = yes ]; then printf '(shared/prebuild/RT-AXE7800/|(^|/)release/src/router/shared/prebuild/)%s$' "$1"
+  else printf 'shared/prebuild/RT-AXE7800/%s$' "$1"; fi
+}
+echo
+
 check_object(){ # $1 = object name ; prints status, sets RESULT
-  local o="$1" hits n=0 satisfied=no alt
+  local o="$1" hits n=0 satisfied=no
   RESULT="MISSING"
   echo "--- $o ---"
   hits=$(grep -E "shared/prebuild/RT-AXE7800/${o}$" "$INDEX" || true)
+  if [ -z "$hits" ] && [ "$RAW_FLAT_OK" = yes ]; then
+    hits=$(grep -E "(^|/)release/src/router/shared/prebuild/${o}$" "$INDEX" || true)
+    [ -n "$hits" ] && echo "      layout: raw-ASUS flat (identity: $RAW_FLAT_WHY)"
+  fi
   if [ -n "$hits" ]; then
     while IFS= read -r h; do
       [ -n "$h" ] || continue
@@ -213,7 +254,7 @@ for o in $CURRENT_REQUIRED_P0; do
   esac
 done
 echo
-echo "  CURRENT_REQUIRED_P0: $SAT satisfied, $FAIL unsatisfied (of 4)"
+echo "  CURRENT_REQUIRED_P0: $SAT satisfied, $FAIL unsatisfied (of $((SAT+FAIL)))"
 
 echo
 echo "=============================================================="
@@ -221,7 +262,7 @@ echo " FEATURE_GATED_EXPECTED (shipped for other BCM6756 models;"
 echo " NOT required by the current config — never affects exit code)"
 echo "=============================================================="
 for o in $FEATURE_GATED_EXPECTED; do
-  if grep -qE "shared/prebuild/RT-AXE7800/${o}$" "$INDEX"; then
+  if grep -qE "$(shared_obj_re "$o")" "$INDEX"; then
     echo "  PRESENT              $o"
   else
     find_src_alt "$o"
@@ -236,7 +277,7 @@ echo
 echo "  -- NON_6756_OPTIONAL (present only in the BCM4912 donor; not part of either"
 echo "     BCM6756 17-object set; informational, never affects exit code) --"
 for o in $NON_6756_OPTIONAL; do
-  if grep -qE "shared/prebuild/RT-AXE7800/${o}$" "$INDEX"; then
+  if grep -qE "$(shared_obj_re "$o")" "$INDEX"; then
     echo "  PRESENT              $o"
   else
     echo "  ABSENT (expected)    $o"
@@ -249,7 +290,7 @@ echo " Completeness: full BCM6756-style shared/prebuild inventory (17)"
 echo "=============================================================="
 have=0; miss=""
 for o in $FULL_6756_SET; do
-  if grep -qE "shared/prebuild/RT-AXE7800/${o}$" "$INDEX"; then have=$((have+1)); else miss="$miss $o"; fi
+  if grep -qE "$(shared_obj_re "$o")" "$INDEX"; then have=$((have+1)); else miss="$miss $o"; fi
 done
 echo "  present: $have of 17"
 [ -n "$miss" ] && echo "  absent :$miss"
@@ -260,8 +301,9 @@ echo "=============================================================="
 echo " RUNTIME_CRITICAL (informational - does NOT affect the exit code)"
 echo "=============================================================="
 rt_hit=$(grep -E "$RUNTIME_FW_PATH_RE" "$INDEX" | head -1 || true)
+[ -n "$rt_hit" ] || [ "$RAW_FLAT_OK" != yes ] || rt_hit=$(grep -E "$RUNTIME_FW_RAW_RE" "$INDEX" | head -1 || true)
 if [ -z "$rt_hit" ]; then
-  echo "  MISSING   dongle/sysdeps/RT-AXE7800/6715b0/rtecdc.bin"
+  echo "  MISSING   dongle/sysdeps/RT-AXE7800/6715b0/rtecdc.bin (or sysdeps/default/ in a raw-ASUS package)"
   echo "            WARNING: wl1 (PCIe 5 GHz DHD radio) firmware absent."
   echo "            The published firmware ships this at rom/etc/wlan/dhd/6715b0/rtecdc.bin."
   echo "            Runtime/build asset - not counted as a P0 build input."
@@ -271,9 +313,11 @@ else
     rt_sha=$(sha256sum "$rt_lp" | cut -d" " -f1)
     if [ "$rt_sha" = "$RUNTIME_FW_STOCK_SHA256" ]; then
       echo "  HASH-MATCH-KNOWN-STOCK  $rt_hit"
+    elif [ "$rt_sha" = "$RUNTIME_FW_GPL_SHA256" ]; then
+      echo "  HASH-MATCH-KNOWN-GPL-25206  $rt_hit (retail copy differs only by a 14-byte build stamp)"
     else
       echo "  PRESENT   $rt_hit"
-      echo "            sha256=$rt_sha (does not match the known 388_25206 stock firmware)"
+      echo "            sha256=$rt_sha (matches neither the known 388_25206 retail nor GPL copy)"
     fi
     echo "            size=$(stat -c%s "$rt_lp")"
   else
@@ -298,6 +342,14 @@ release/src-rt-5.04axhnd.675x/router-sysdep.rt-axe7800"
 while IFS= read -r dir; do
   [ -n "$dir" ] || continue
   hits=$(grep -E "(^|/)${dir}(/|$)" "$INDEX" | head -50 || true)
+  # raw-ASUS packages keep these flat: <comp>/prebuild/, hostTools/prebuilt/, router-sysdep/
+  case "$dir" in */prebuild/RT-AXE7800|*/prebuilt/RT-AXE7800|*/router-sysdep.rt-axe7800)
+    if [ -z "$hits" ] && [ "$RAW_FLAT_OK" = yes ]; then
+      flat=${dir%/RT-AXE7800}; flat=${flat%.rt-axe7800}
+      hits=$(grep -E "(^|/)${flat}/" "$INDEX" | head -50 || true)
+      [ -n "$hits" ] && dir="$flat (raw-ASUS flat)"
+    fi ;;
+  esac
   if [ -z "$hits" ]; then
     printf '  %-9s %s\n' "MISSING" "$dir"
   else

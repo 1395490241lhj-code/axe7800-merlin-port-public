@@ -8,7 +8,7 @@ choice made here.
 
 - `tools/verify-asus-gpl-drop.sh`
 - `docs/`, `prep/`, `research/public-oracle/` documentation and TSV analyses
-- `repro/clean-replay-v2/replay.sh` and the provenance manifests
+- `repro/clean-replay-v2/replay.sh` (removed; git tag `historical-replays`) and the provenance manifests
 - `README.md`, `STATUS.md`, this `NOTICE.md`
 
 **No license is granted at this time.** A license has deliberately **not** been chosen: the
