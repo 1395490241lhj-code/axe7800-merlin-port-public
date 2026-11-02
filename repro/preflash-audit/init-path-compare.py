@@ -7,8 +7,9 @@ Takes the functions called directly from rc/init.c sysinit() and init_main() in 
 tree, finds each definition (brace-matched, comments stripped, whitespace normalised) in
 rc/, rc/sysdeps/, shared/ and shared/sysdeps/broadcom/ of both trees, and classifies it:
 IDENTICAL, DIFFERS (+changed line count), PREBUILT (only in ASUS 25206 prebuilt objects, which
-Merlin links unchanged), INLINE/MACRO, or UNDEFINED (call compiled out for this model; the
-link succeeded). Preprocessor conditionals are kept: they are part of the definition.
+Merlin links unchanged), or UNDEFINED/INLINE: no definition in either tree, i.e. a libc call
+not in the skip list, a header inline/macro, or a call compiled out for this model (the link
+succeeded). Preprocessor conditionals are kept: they are part of the definition.
 """
 import os, re, sys, subprocess, difflib, glob
 
@@ -116,5 +117,5 @@ for n in names:
     elif g and not m:
         st = 'STOCK-ONLY source'
     else:
-        st = 'UNDEFINED/INLINE (compiled out or header inline for this model)'
+        st = 'UNDEFINED/INLINE (libc, header inline, or compiled out for this model)'
     print(f'{n:40} {st}')

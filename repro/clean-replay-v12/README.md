@@ -100,9 +100,11 @@ stock 25206 firmware. Nothing is stubbed or reimplemented.
 The second clean build (`v12b`, after moving `hnd_extra/prebuilt` into
 `router-sysdep.rt-axe7800`) compiled `httpd` and failed only at its link, on those two symbols.
 [`scan-generation-gaps.py`](scan-generation-gaps.py) then listed every remaining Merlin call
-into a private symbol that other models' prebuilts define and the 25206 supply does not. No
-other hit is compiled for RT-AXE7800: `rc` already links, the `httpd` link reported only these
-two, and the built `libshared.so` does not import the two `shared/` candidates.
+into a private symbol that other models' prebuilts define and the 25206 supply does not. With
+its default donors it lists 65 call sites of 17 symbols, all in `rc` and `httpd` (re-run
+2026-11-02). None is compiled for RT-AXE7800: `rc` already links, and the `httpd` link reported
+only these two. The two symbols above are not in that list, because no donor defines them; the
+link found them.
 
 0003 was not a link failure. It closes the latent mismatch recorded above, so that open code
 built for this model sees the same ABI as the supplied objects.

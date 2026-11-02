@@ -5,9 +5,11 @@ usage: scan-generation-gaps.py <merlin-worktree> <gpl-root> [donor-model ...]
 
 A symbol is a candidate when it is DEFINED by a per-model prebuilt object that the Merlin tree
 ships for another model (default donors: GT-AX6000 RT-AX86U_PRO RT-AX88U_PRO, the newest 388
-generation in 3004.388), is NOT defined by any 25206 prebuilt for the same component, and is
-referenced from Merlin's open .c sources of that component. Each candidate is a call site that
-Merlin picked up from a newer ASUS GPL than 25206. The output is a list to review, not a verdict.
+generation in 3004.388), is NOT defined by any 25206 prebuilt (of any component: rc and httpd
+also link libshared), and is referenced from Merlin's open .c sources of that component. Each
+candidate is a call site that Merlin picked up from a newer ASUS GPL than 25206. The output is a
+list to review, not a verdict. Symbols no donor defines (e.g. nvram_modify_log) are outside this
+scan; the link of the build finds those.
 """
 import os, re, subprocess, sys, collections
 
@@ -25,15 +27,13 @@ def prebuild_dirs(root):
         if os.path.basename(dp) in ('prebuild', 'prebuilt'):
             yield dp
 
-# 25206 supply, per component directory (path relative to router/, prebuild dir stripped)
-supply = collections.defaultdict(set)
+# every symbol the 25206 prebuilts define
+all_supply = set()
 for d in prebuild_dirs(GR):
-    comp = os.path.relpath(os.path.dirname(d), GR)
     for dp, dn, fn in os.walk(d):
         for f in fn:
             if f.endswith('.o') or '.so' in f:
-                supply[comp] |= defined(os.path.join(dp, f))
-all_supply = set().union(*supply.values())
+                all_supply |= defined(os.path.join(dp, f))
 
 donor_defs = collections.defaultdict(lambda: collections.defaultdict(set))  # comp -> sym -> donors
 for d in prebuild_dirs(R):
